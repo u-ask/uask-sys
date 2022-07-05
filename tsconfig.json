@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "target": "esnext",
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "module": "esnext",
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationDir": "./out",
+    "removeComments": true
+  },
+  "include": ["./src/**/*", "./db/**/*"],
+}

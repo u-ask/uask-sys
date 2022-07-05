@@ -1,0 +1,64 @@
+import typescript from "@rollup/plugin-typescript";
+import dts from "rollup-plugin-dts";
+import resolve from "@rollup/plugin-node-resolve";
+import commonjs from "@rollup/plugin-commonjs";
+import cleanup from "rollup-plugin-cleanup";
+import pkg from "./package.json";
+
+const external = Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies });
+
+const plugins = [
+  typescript({
+    target: "es6",
+    module: "es2020",
+    declaration: false,
+    declarationDir: undefined,
+  }),
+  resolve(),
+  commonjs(),
+  cleanup({ comments: "none" }),
+];
+
+export default [
+  {
+    input: {
+      index: "./src/client-index.ts",
+      example: "./src/client-example.ts",
+    },
+    output: {
+      dir: "./dist/client",
+      format: "es",
+      manualChunks: {
+        system: ["./src/drivers/index.ts", "./src/system/client.ts"],
+      },
+      chunkFileNames: info => {
+        if (info.name == "system") return "system.js";
+        return "[name]-[hash].js";
+      },
+    },
+    external: [...external, "uask-dom/example", "uask-auth/example"],
+    plugins,
+  },
+  {
+    input: {
+      index: "./out/src/client-index.d.ts",
+      example: "./out/src/client-example.d.ts",
+    },
+    output: {
+      dir: "./dist/client",
+      format: "es",
+      manualChunks: {
+        system: [
+          "./out/src/drivers/index.d.ts",
+          "./out/src/system/client.d.ts",
+        ],
+      },
+      chunkFileNames: info => {
+        if (info.name == "system") return "system.d.ts";
+        return "[name]-[hash].d.ts";
+      },
+    },
+    external: [...external, "uask-dom/example", "uask-auth/example"],
+    plugins: [dts()],
+  },
+];

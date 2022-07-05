@@ -1,0 +1,54 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "All tests",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "args": [
+                "--loader",
+                "ts-node/esm",
+                "./libs/fluentwalk/register.js",
+                "src/system/**/*.test.ts"
+            ],
+            "envFile": "${workspaceFolder}/.env",
+            "internalConsoleOptions": "openOnSessionStart",
+            "outputCapture": "std"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Current file tests",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "args": [
+                "--loader",
+                "ts-node/esm",
+                "${file}"
+            ],
+            "envFile": "${workspaceFolder}/.env",
+            "internalConsoleOptions": "openOnSessionStart",
+            "outputCapture": "std"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Server",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "args": [
+                "--loader",
+                "ts-node/esm",
+                "${workspaceFolder}/src/server.ts"
+            ],
+            "envFile": "${workspaceFolder}/.env",
+            "internalConsoleOptions": "openOnSessionStart",
+            "outputCapture": "std"
+        }
+    ]
+}

@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "es6",
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "module": "es2020",
+    "declaration": false,
+    "emitDeclarationOnly": false,
+    "outDir": "./out",
+  },
+  "include": ["./db/**/*"],
+}
