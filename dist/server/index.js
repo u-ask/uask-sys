@@ -1,5 +1,5 @@
 import restana from 'restana';
-import { _ as __awaiter, I as InterviewSaveOptions, i as interviewItemDeserialize, p as participantSerialize, s as surveySerialize, a as surveyDeserialize, P as ParticipantSummary, c as config, b as __rest, D as Document, d as adminRouter, e as errorMessage, f as isManaged, g as assertNoSubset, S as Store, B as Builder, U as UserTruenorthDriver, h as UserManagedDriver, j as SurveyStoreDriver, k as SurveyReconciliationDriver, l as SurveyCacheDriver, m as SampleStoreDriver, n as SampleCacheDriver, o as ParticipantStoreDriver, q as ParticipantReconciliationDriver, r as ParticipantMixinDriver, t as ParticipantCacheDriver, u as ParticipantAuditDriver, v as ParticipantSummaryDriver, w as InterviewStoreDriver, x as InterviewAuditDriver, y as InterviewManagedDriver, z as InterviewMixinDriver, A as InterviewRuleDriver, C as SummaryDbDriver, E as AuditDbDriver, K as KpiGenericDriver, F as getAllAccounts } from './system.js';
+import { _ as __awaiter, I as InterviewSaveOptions, i as interviewItemDeserialize, p as participantSerialize, s as surveySerialize, a as surveyDeserialize, P as ParticipantSummary, c as config, b as __rest, D as Document, d as adminRouter, e as errorMessage, f as isManaged, g as assertNoSubset, S as Store, B as Builder, U as UserTruenorthDriver, h as UserManagedDriver, j as SurveyStoreDriver, k as SurveyReconciliationDriver, l as SurveyCacheDriver, m as SampleStoreDriver, n as SampleCacheDriver, o as ParticipantStoreDriver, q as ParticipantReconciliationDriver, r as ParticipantMixinDriver, t as ParticipantCacheDriver, u as ParticipantAuditDriver, v as ParticipantSummaryDriver, w as InterviewStoreDriver, x as InterviewAuditDriver, y as InterviewManagedDriver, z as InterviewMixinDriver, A as InterviewRuleDriver, C as SummaryDbDriver, E as AuditDbDriver, K as KpiGenericDriver } from './system.js';
 import Knex from 'knex';
 import { graphqlHTTP } from 'express-graphql';
 import helmet from 'helmet';
@@ -124,7 +124,7 @@ function getArchiveByName(driverFactory, req, res) {
                 ? yield drivers.participantDriver.getBySample(survey, allsamples.find(s => s.sampleCode == req.params.sampleCode))
                 : yield drivers.participantDriver
                     .getAll(survey, allsamples)
-                    .then(r => r.filter(p => { var _a; return (_a = user === null || user === void 0 ? void 0 : user.samples) === null || _a === void 0 ? void 0 : _a.includes(p.sample); }));
+                    .then(r => r.filter(p => { var _a; return (_a = user === null || user === void 0 ? void 0 : user.sampleCodes) === null || _a === void 0 ? void 0 : _a.includes(p.sample.sampleCode); }));
             const surveyDataset = new SurveyTableSet(survey, participants);
             const auditDataset = yield addAuditProps(surveyDataset, survey, drivers.auditDriver);
             const stream = toArchive(auditDataset);
@@ -728,7 +728,7 @@ const DbAdapter = knexAdapter(client$1);
 const manager = new AccountManager(client$1);
 const findAccount = (ctx, id) => manager.findOIDCAccount(ctx, id);
 const oidc = provider(DbAdapter, findAccount);
-const oidcService = service(oidc, client$1, (account, { code }) => __awaiter(void 0, void 0, void 0, function* () {
+const oidcService = service(oidc, manager, (account, { code }) => __awaiter(void 0, void 0, void 0, function* () {
     const notifier = new Notifier();
     yield notifier.notifyAuthentCode(account, code);
 }));
@@ -1693,9 +1693,9 @@ class SurveyAuthorizationManager {
     canReadSampleError(sampleCode) {
         if (!this.user)
             return "unknown user";
-        if (this.user.samples &&
-            this.user.samples.length > 0 &&
-            !this.user.samples.some(s => s.sampleCode == sampleCode))
+        if (this.user.sampleCodes &&
+            this.user.sampleCodes.length > 0 &&
+            !this.user.sampleCodes.includes(sampleCode))
             return "not authorized to read participants from sample";
         return "";
     }
@@ -1705,9 +1705,9 @@ class SurveyAuthorizationManager {
     canReadParticipantError(participantCode) {
         if (!this.user)
             return "unknown user";
-        if (this.user.participantIds &&
-            this.user.participantIds.length > 0 &&
-            !this.user.participantIds.includes(participantCode))
+        if (this.user.participantCodes &&
+            this.user.participantCodes.length > 0 &&
+            !this.user.participantCodes.includes(participantCode))
             return "not authorized to read participant";
         return "";
     }
@@ -1999,7 +1999,11 @@ class InterviewNotificationDriver {
     getWorkflowUsers(survey, sample, workflows) {
         return __awaiter(this, void 0, void 0, function* () {
             const users = yield this.userDriver.getAll(survey, [sample]);
-            return users.filter(u => { var _a; return workflows.some(w => w.name == u.workflow) && ((_a = u.samples) === null || _a === void 0 ? void 0 : _a.includes(sample)); });
+            return users.filter(u => {
+                var _a;
+                return workflows.some(w => w.name == u.workflow) &&
+                    ((_a = u.sampleCodes) === null || _a === void 0 ? void 0 : _a.includes(sample.sampleCode));
+            });
         });
     }
     buidResult(infoKeys, acknowledged, interview) {
@@ -2027,7 +2031,9 @@ class UserRoleDriver {
         return __awaiter(this, void 0, void 0, function* () {
             const users = yield this.driver.getAll(survey, samples);
             return users.map(u => this.allSamplesRoles.includes(u.role)
-                ? u.update({ samples: DomainCollection(...samples) })
+                ? u.update({
+                    sampleCodes: DomainCollection(...samples.map(s => s.sampleCode)),
+                })
                 : u);
         });
     }
@@ -2035,14 +2041,16 @@ class UserRoleDriver {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this.driver.getByUserId(survey, samples, userid);
             return this.allSamplesRoles.includes(user === null || user === void 0 ? void 0 : user.role)
-                ? user === null || user === void 0 ? void 0 : user.update({ samples: DomainCollection(...samples) })
+                ? user === null || user === void 0 ? void 0 : user.update({
+                    sampleCodes: DomainCollection(...samples.map(s => s.sampleCode)),
+                })
                 : user;
         });
     }
     save(survey, user) {
         return __awaiter(this, void 0, void 0, function* () {
             const updatedUser = this.allSamplesRoles.includes(user.role)
-                ? user.update({ samples: DomainCollection(new Sample("__all__")) })
+                ? user.update({ sampleCodes: DomainCollection("__all__") })
                 : user;
             return this.driver.save(survey, updatedUser);
         });
@@ -2358,24 +2366,12 @@ class ServerDrivers {
     }
 }
 
-function extendsDrivers(d, client) {
-    const accountDriver = {
-        value: {
-            getAll() {
-                return getAllAccounts(client);
-            },
-        },
-    };
-    return Object.defineProperties(d, {
-        accountDriver,
-    });
-}
 function txDriverFactory(client) {
     return (consumer, ctx, opt = { atomic: false }) => {
         const userid = getUserid(ctx);
         const { atomic } = opt;
         return client.transaction(tx => {
-            const drivers = extendsDrivers(new ServerDrivers(tx, userid), client);
+            const drivers = new ServerDrivers(tx, userid);
             const tryConsumer = () => consumer(drivers, userid);
             const firstTry = tryConsumer();
             return atomic ? firstTry.catch(tryConsumer) : firstTry;

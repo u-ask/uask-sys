@@ -60,11 +60,15 @@ export async function getArchiveByName<P extends Protocol>(
       const participants = req.params.sampleCode
         ? await drivers.participantDriver.getBySample(
             survey,
-            allsamples.find(s => s.sampleCode == req.params.sampleCode) as Sample
+            allsamples.find(
+              s => s.sampleCode == req.params.sampleCode
+            ) as Sample
           )
         : await drivers.participantDriver
             .getAll(survey, allsamples)
-            .then(r => r.filter(p => user?.samples?.includes(p.sample)));
+            .then(r =>
+              r.filter(p => user?.sampleCodes?.includes(p.sample.sampleCode))
+            );
 
       const surveyDataset = new SurveyTableSet(survey, participants);
       const auditDataset = await addAuditProps(

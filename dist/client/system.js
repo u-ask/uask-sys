@@ -1008,9 +1008,9 @@ class SurveyAuthorizationManager {
     canReadSampleError(sampleCode) {
         if (!this.user)
             return "unknown user";
-        if (this.user.samples &&
-            this.user.samples.length > 0 &&
-            !this.user.samples.some(s => s.sampleCode == sampleCode))
+        if (this.user.sampleCodes &&
+            this.user.sampleCodes.length > 0 &&
+            !this.user.sampleCodes.includes(sampleCode))
             return "not authorized to read participants from sample";
         return "";
     }
@@ -1020,9 +1020,9 @@ class SurveyAuthorizationManager {
     canReadParticipantError(participantCode) {
         if (!this.user)
             return "unknown user";
-        if (this.user.participantIds &&
-            this.user.participantIds.length > 0 &&
-            !this.user.participantIds.includes(participantCode))
+        if (this.user.participantCodes &&
+            this.user.participantCodes.length > 0 &&
+            !this.user.participantCodes.includes(participantCode))
             return "not authorized to read participant";
         return "";
     }

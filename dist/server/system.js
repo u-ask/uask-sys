@@ -6,7 +6,7 @@ import fnv from '@sindresorhus/fnv1a';
 import debug from 'debug';
 import { Stealer } from 'stealer';
 
-var _a;
+var _a, _b;
 const development = {
     client: "postgresql",
     connection: JSON.parse((_a = process.env.DB_CONNSTR) !== null && _a !== void 0 ? _a : '{"user":"postgres","host":"localhost","database":"dev"}'),
@@ -30,9 +30,20 @@ const demo = {
         directory: ["./node_modules/uask-auth/db/seeds/dev", "./db/seeds/dev"],
     },
 };
+const production = {
+    client: "postgresql",
+    connection: JSON.parse((_b = process.env.DB_CONNSTR) !== null && _b !== void 0 ? _b : '{"user":"postgres","host":"localhost","database":"postgres"}'),
+    migrations: {
+        directory: ["./node_modules/uask-auth/db/migrations", "./db/migrations"],
+    },
+    seeds: {
+        directory: ["./db/seeds/preprod"],
+    },
+};
 const config = {
     development,
     demo,
+    production,
 };
 
 function __rest(s, e) {
@@ -1092,10 +1103,6 @@ function hasValue(interviewItem) {
         typeof interviewItem.unit != "undefined");
 }
 
-function getAllAccounts$1(client) {
-    const manager = new AccountManager(client);
-    return manager.getAll();
-}
 function getAllAccountsForSurvey$1(surveyName, client) {
     const manager = new AccountManager(client);
     return manager.getBySurvey(surveyName);
@@ -1109,15 +1116,6 @@ function saveAccount(account, client) {
     return manager.save(account);
 }
 
-function getAllAccounts(driverFactory, req, res) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return driverFactory((drivers) => __awaiter(this, void 0, void 0, function* () {
-            var _a;
-            const accounts = yield ((_a = drivers.accountDriver) === null || _a === void 0 ? void 0 : _a.getAll());
-            res.send(accounts);
-        }), { req, res });
-    });
-}
 function getAllAccountsForSurvey(driverFactory, req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         return driverFactory((drivers) => __awaiter(this, void 0, void 0, function* () {
@@ -1156,9 +1154,6 @@ function saveAccountOnSurvey(driverFactory, req, res) {
 function adminRouter(driverFactory) {
     return restana()
         .newRouter()
-        .get("/accounts", (req, res) => __awaiter(this, void 0, void 0, function* () {
-        yield getAllAccounts(driverFactory, req, res);
-    }))
         .get("/:survey/users", (req, res) => __awaiter(this, void 0, void 0, function* () {
         yield getAllAccountsForSurvey(driverFactory, req, res);
     }))
@@ -1178,9 +1173,9 @@ class UserTruenorthDriver {
         return __awaiter(this, void 0, void 0, function* () {
             const accounts = yield getAllAccountsForSurvey$1(survey.name, this.client);
             return accounts.map(a => new User(a.surname, a.given_name, a.title, a.surveys[survey.name].role, a.email, a.phone, a.surveys[survey.name].samples
-                ? DomainCollection(...a.surveys[survey.name].samples.map(s => samples.find(sample => sample.sampleCode == s)))
-                : DomainCollection(), a.surveys[survey.name].participantIds
-                ? DomainCollection(...a.surveys[survey.name].participantIds)
+                ? DomainCollection(...a.surveys[survey.name].samples.map(s => { var _a; return (_a = samples.find(sample => sample.sampleCode == s)) === null || _a === void 0 ? void 0 : _a.sampleCode; }))
+                : DomainCollection(), a.surveys[survey.name].participants
+                ? DomainCollection(...a.surveys[survey.name].participants)
                 : DomainCollection(), {
                 password: a.password,
                 id: a.id,
@@ -1196,9 +1191,11 @@ class UserTruenorthDriver {
             const account = yield getAccountByUserId(userid, this.client);
             if (account) {
                 return new User(account.surname, account.given_name, account.title, account.surveys[survey.name].role, account.email, account.phone, account.surveys[survey.name].samples
-                    ? DomainCollection(...samples.filter(s => account.surveys[survey.name].samples.find(n => s.name == n)))
-                    : DomainCollection(), account.surveys[survey.name].participantIds
-                    ? DomainCollection(...account.surveys[survey.name].participantIds)
+                    ? DomainCollection(...samples
+                        .filter(s => account.surveys[survey.name].samples.some(n => s.name == n))
+                        .map(s => s.sampleCode))
+                    : DomainCollection(), account.surveys[survey.name].participants
+                    ? DomainCollection(...account.surveys[survey.name].participants)
                     : DomainCollection(), {
                     password: account.password,
                     id: account.id,
@@ -1212,22 +1209,22 @@ class UserTruenorthDriver {
         });
     }
     save(survey, user) {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
             const manager = new AccountManager(this.client);
             const account = yield manager.getByUserid(user.userid);
             const surveys = (_a = account === null || account === void 0 ? void 0 : account.surveys) !== null && _a !== void 0 ? _a : {};
             surveys[survey.name] = {
-                samples: ((_c = (_b = user.samples) === null || _b === void 0 ? void 0 : _b.map(sample => sample.sampleCode)) !== null && _c !== void 0 ? _c : []),
+                samples: ((_b = user.samples) !== null && _b !== void 0 ? _b : []),
                 role: user.workflow,
-                participantIds: [...(user.participantIds ? user.participantIds : [])],
+                participants: [...((_c = user.participantCodes) !== null && _c !== void 0 ? _c : [])],
             };
             const userid = ((_e = (_d = user.userid) !== null && _d !== void 0 ? _d : user.email) !== null && _e !== void 0 ? _e : user.phone);
             const update = new Account(userid, surveys, {
                 surname: user.name,
                 given_name: user.firstName,
                 phone: user.phone,
-                samples: (_f = user.samples) === null || _f === void 0 ? void 0 : _f.map(s => s.sampleCode),
+                samples: user.sampleCodes,
                 password: user.password,
                 id: user.id,
                 email: user.email,
@@ -3911,4 +3908,4 @@ class Store extends Drivers {
     }
 }
 
-export { InterviewRuleDriver as A, Builder as B, SummaryDbDriver as C, Document as D, AuditDbDriver as E, getAllAccounts$1 as F, __asyncGenerator as G, __await as H, InterviewSaveOptions as I, __asyncDelegator as J, KpiGenericDriver as K, __asyncValues as L, ParticipantSummary as P, Store as S, UserTruenorthDriver as U, __awaiter as _, surveyDeserialize as a, __rest as b, config as c, adminRouter as d, errorMessage as e, isManaged as f, assertNoSubset as g, UserManagedDriver as h, interviewItemDeserialize as i, SurveyStoreDriver as j, SurveyReconciliationDriver as k, SurveyCacheDriver as l, SampleStoreDriver as m, SampleCacheDriver as n, ParticipantStoreDriver as o, participantSerialize as p, ParticipantReconciliationDriver as q, ParticipantMixinDriver as r, surveySerialize as s, ParticipantCacheDriver as t, ParticipantAuditDriver as u, ParticipantSummaryDriver as v, InterviewStoreDriver as w, InterviewAuditDriver as x, InterviewManagedDriver as y, InterviewMixinDriver as z };
+export { InterviewRuleDriver as A, Builder as B, SummaryDbDriver as C, Document as D, AuditDbDriver as E, __asyncGenerator as F, __await as G, __asyncDelegator as H, InterviewSaveOptions as I, __asyncValues as J, KpiGenericDriver as K, ParticipantSummary as P, Store as S, UserTruenorthDriver as U, __awaiter as _, surveyDeserialize as a, __rest as b, config as c, adminRouter as d, errorMessage as e, isManaged as f, assertNoSubset as g, UserManagedDriver as h, interviewItemDeserialize as i, SurveyStoreDriver as j, SurveyReconciliationDriver as k, SurveyCacheDriver as l, SampleStoreDriver as m, SampleCacheDriver as n, ParticipantStoreDriver as o, participantSerialize as p, ParticipantReconciliationDriver as q, ParticipantMixinDriver as r, surveySerialize as s, ParticipantCacheDriver as t, ParticipantAuditDriver as u, ParticipantSummaryDriver as v, InterviewStoreDriver as w, InterviewAuditDriver as x, InterviewManagedDriver as y, InterviewMixinDriver as z };

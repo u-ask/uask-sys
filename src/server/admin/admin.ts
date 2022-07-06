@@ -2,20 +2,6 @@ import restana, { Protocol, Router, Request, Response } from "restana";
 import { User } from "uask-dom";
 import { DriverFactory } from "../factory.js";
 
-async function getAllAccounts<P extends Protocol>(
-  driverFactory: DriverFactory,
-  req: Request<P>,
-  res: Response<P>
-): Promise<void> {
-  return driverFactory(
-    async drivers => {
-      const accounts = await drivers.accountDriver?.getAll();
-      res.send(accounts);
-    },
-    { req, res }
-  );
-}
-
 async function getAllAccountsForSurvey<P extends Protocol>(
   driverFactory: DriverFactory,
   req: Request<P>,
@@ -77,9 +63,6 @@ export function adminRouter<P extends Protocol>(
 ): Router<P> {
   return restana<P>()
     .newRouter()
-    .get("/accounts", async (req, res) => {
-      await getAllAccounts(driverFactory, req, res);
-    })
     .get("/:survey/users", async (req, res) => {
       await getAllAccountsForSurvey(driverFactory, req, res);
     })

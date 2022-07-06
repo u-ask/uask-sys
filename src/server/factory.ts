@@ -1,33 +1,8 @@
 import { Knex } from "knex";
-import { Account } from "uask-auth";
 import { IDrivers } from "../drivers/index.js";
-import { getAllAccounts } from "./admin/index.js";
 import { ServerDrivers } from "./driver.js";
 
-type IExtendedDrivers = IDrivers & {
-  accountDriver?: {
-    getAll(): Promise<Account[]>;
-  };
-};
-
-function extendsDrivers(d: IDrivers, client: Knex): IExtendedDrivers {
-  const accountDriver: PropertyDescriptor = {
-    value: {
-      getAll() {
-        return getAllAccounts(client);
-      },
-    },
-  };
-
-  return Object.defineProperties(d, {
-    accountDriver,
-  }) as IExtendedDrivers;
-}
-
-export type Consumer<T> = (
-  drivers: IExtendedDrivers,
-  userid: string
-) => Promise<T>;
+export type Consumer<T> = (drivers: IDrivers, userid: string) => Promise<T>;
 
 export type DriverFactory = <T>(
   consumer: Consumer<T>,
@@ -45,7 +20,7 @@ export function txDriverFactory(client: Knex): DriverFactory {
 
     return client.transaction(
       tx => {
-        const drivers = extendsDrivers(new ServerDrivers(tx, userid), client);
+        const drivers = new ServerDrivers(tx, userid);
         const tryConsumer = () => consumer(drivers, userid);
         const firstTry = tryConsumer();
         return atomic ? firstTry.catch(tryConsumer) : firstTry;

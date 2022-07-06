@@ -23,8 +23,8 @@ class UserWebDriver implements IUserDriver {
       u.workflow,
       u.email,
       u.phone,
-      u.samples,
-      u.participantIds,
+      u.sampleCodes,
+      u.participantCodes,
       {
         role: u.role,
         email_verified: u.email_verfied,

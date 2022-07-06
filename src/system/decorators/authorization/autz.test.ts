@@ -137,7 +137,9 @@ test("Can read sample", t => {
   const samples = [new Sample("001"), new Sample("002")];
   const am = new SurveyAuthorizationManager(
     P11_05,
-    new User("writer").update({ samples: DomainCollection(samples[0]) })
+    new User("writer").update({
+      sampleCodes: DomainCollection(samples[0].sampleCode),
+    })
   );
   t.ok(am.canReadSample(samples[0].sampleCode));
   t.notOk(am.canReadSample(samples[1].sampleCode));
@@ -149,17 +151,17 @@ test("Can read sample", t => {
 });
 
 test("Can read participant", t => {
-  const participantIds = ["00001", "00002"];
+  const participantCodes = ["00001", "00002"];
   const am = new SurveyAuthorizationManager(
     P11_05,
     new User("writer").update({
-      participantIds: DomainCollection(participantIds[0]),
+      participantCodes: DomainCollection(participantCodes[0]),
     })
   );
-  t.ok(am.canReadParticipant(participantIds[0]));
-  t.notOk(am.canReadParticipant(participantIds[1]));
+  t.ok(am.canReadParticipant(participantCodes[0]));
+  t.notOk(am.canReadParticipant(participantCodes[1]));
   t.equal(
-    am.canReadParticipantError(participantIds[1]),
+    am.canReadParticipantError(participantCodes[1]),
     "not authorized to read participant"
   );
   t.end();

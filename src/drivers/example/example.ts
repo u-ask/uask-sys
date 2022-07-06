@@ -50,8 +50,8 @@ const userObj = exampleAccounts
           userid: user.userid,
         }
       ),
-      samples: user.surveys["P11-05"].samples,
-      participantIds: user.surveys["P11-05"].participantIds,
+      sampleCodes: user.surveys["P11-05"].samples,
+      participantCodes: user.surveys["P11-05"].participants,
     })
   );
 
@@ -91,12 +91,10 @@ function seedExampleUsers(): User[] {
     const uu = JSON.parse(u);
     return Object.assign(Object.create(User.prototype), {
       ...uu,
-      samples:
-        uu.samples[0] == "__all__"
-          ? P11_05_Samples
-          : uu.samples.map((sc: string) =>
-              P11_05_Samples.find(s => s.sampleCode == sc)
-            ),
+      sampleCodes:
+        uu.sampleCodes[0] == "__all__"
+          ? P11_05_Samples.map(s => s.sampleCode)
+          : uu.sampleCodes,
     });
   });
 }

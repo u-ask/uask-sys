@@ -304,7 +304,7 @@ class UserWebDriver {
             .catch((error) => __awaiter(this, void 0, void 0, function* () { return yield handleClientError(error); }));
     }
     createUser(u) {
-        return new User(u.name, u.firstName, u.title, u.workflow, u.email, u.phone, u.samples, u.participantIds, {
+        return new User(u.name, u.firstName, u.title, u.workflow, u.email, u.phone, u.sampleCodes, u.participantCodes, {
             role: u.role,
             email_verified: u.email_verfied,
             id: u.id,

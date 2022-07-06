@@ -30,13 +30,14 @@ export class UserTruenorthDriver implements IUserDriver {
           a.phone as string,
           a.surveys[survey.name].samples
             ? (DomainCollection(
-                ...(a.surveys[survey.name].samples as string[]).map(s =>
-                  samples.find(sample => sample.sampleCode == s)
+                ...(a.surveys[survey.name].samples as string[]).map(
+                  s =>
+                    samples.find(sample => sample.sampleCode == s)?.sampleCode
                 )
-              ) as IDomainCollection<Sample>)
+              ) as IDomainCollection<string>)
             : DomainCollection(),
-          a.surveys[survey.name].participantIds
-            ? DomainCollection(...a.surveys[survey.name].participantIds)
+          a.surveys[survey.name].participants
+            ? DomainCollection(...a.surveys[survey.name].participants)
             : DomainCollection(),
           {
             password: a.password,
@@ -66,13 +67,15 @@ export class UserTruenorthDriver implements IUserDriver {
         account.phone as string,
         account.surveys[survey.name].samples
           ? DomainCollection(
-              ...samples.filter(s =>
-                account.surveys[survey.name].samples.find(n => s.name == n)
-              )
+              ...samples
+                .filter(s =>
+                  account.surveys[survey.name].samples.some(n => s.name == n)
+                )
+                .map(s => s.sampleCode)
             )
           : DomainCollection(),
-        account.surveys[survey.name].participantIds
-          ? DomainCollection(...account.surveys[survey.name].participantIds)
+        account.surveys[survey.name].participants
+          ? DomainCollection(...account.surveys[survey.name].participants)
           : DomainCollection(),
         {
           password: account.password,
@@ -92,17 +95,16 @@ export class UserTruenorthDriver implements IUserDriver {
     const account = await manager.getByUserid(user.userid as string);
     const surveys = account?.surveys ?? {};
     surveys[survey.name] = {
-      samples: (user.samples?.map(sample => sample.sampleCode) ??
-        []) as string[],
+      samples: (user.samples ?? []) as string[],
       role: user.workflow,
-      participantIds: [...(user.participantIds ? user.participantIds : [])],
+      participants: [...(user.participantCodes ?? [])],
     };
     const userid = (user.userid ?? user.email ?? user.phone) as string;
     const update = new Account(userid, surveys, {
       surname: user.name,
       given_name: user.firstName,
       phone: user.phone,
-      samples: user.samples?.map(s => s.sampleCode),
+      samples: user.sampleCodes,
       password: user.password,
       id: user.id,
       email: user.email,

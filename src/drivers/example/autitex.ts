@@ -37,11 +37,12 @@ export class AuditExampleDriver implements IAuditDriver {
   ): Promise<AuditRecord[]> {
     const date = new Date().getTime();
     const samples = await this.drivers.sampleDriver.getAll(survey);
-    const participant = await this.drivers.participantDriver.getByParticipantCode(
-      survey,
-      samples,
-      target.participantCode
-    );
+    const participant =
+      await this.drivers.participantDriver.getByParticipantCode(
+        survey,
+        samples,
+        target.participantCode
+      );
     const interview = participant.interviews.find(
       i => i.nonce == target.nonce
     ) as Interview;
@@ -60,14 +61,20 @@ export class AuditExampleDriver implements IAuditDriver {
           date,
           operations
         );
-      return await buildInterviewRecords(participant.sample, interview, target, date);
+      return await buildInterviewRecords(
+        participant.sample,
+        interview,
+        target,
+        date
+      );
     }
     if (isParticipantTarget(target)) {
-      const participant = await this.drivers.participantDriver.getByParticipantCode(
-        survey,
-        samples,
-        target.participantCode
-      );
+      const participant =
+        await this.drivers.participantDriver.getByParticipantCode(
+          survey,
+          samples,
+          target.participantCode
+        );
       const records = await buildParticipantRecords(
         participant.sample,
         participant,

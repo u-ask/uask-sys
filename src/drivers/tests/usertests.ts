@@ -11,8 +11,7 @@ export async function testUsersGetBySurvey(
   const users = await drivers.userDriver.getAll(survey, samples);
   t.equal(users?.length, 8);
   const writer = users?.find(u => u.email == "writer001@example.com");
-  const sampleZero = samples.find(s => s.sampleCode == "001");
-  t.deepLooseEqual(writer?.samples, DomainCollection(sampleZero));
+  t.deepLooseEqual(writer?.sampleCodes, DomainCollection("001"));
   t.equal(writer?.role, "writer");
 }
 
@@ -29,7 +28,7 @@ export async function testCreateNewUser(
     "writer",
     "writer003@example.com",
     "0512131415",
-    DomainCollection(sample),
+    DomainCollection(sample.sampleCode),
     DomainCollection(),
     {
       userid: Math.random(),
@@ -54,7 +53,7 @@ export async function testUpdateExistingUser(
     "writer",
     "writer001@example.com",
     "+33612345678",
-    DomainCollection(sample),
+    DomainCollection(sample.sampleCode),
     DomainCollection(),
     {
       id: "b7b0b6e2-d05c-44cf-8241-02ca8c87d15b",

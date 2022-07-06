@@ -1,11 +1,6 @@
 import { Account, AccountManager } from "uask-auth";
 import { Knex } from "knex";
 
-function getAllAccounts(client: Knex): Promise<Account[]> {
-  const manager = new AccountManager(client);
-  return manager.getAll();
-}
-
 function getAllAccountsForSurvey(
   surveyName: string,
   client: Knex
@@ -27,9 +22,4 @@ function saveAccount(account: Account, client: Knex): Promise<void> {
   return manager.save(account);
 }
 
-export {
-  getAllAccounts,
-  getAllAccountsForSurvey,
-  saveAccount,
-  getAccountByUserId,
-};
+export { getAllAccountsForSurvey, saveAccount, getAccountByUserId };

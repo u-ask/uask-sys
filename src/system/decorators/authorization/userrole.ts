@@ -15,7 +15,9 @@ export class UserRoleDriver implements IUserDriver {
 
     return users.map(u =>
       this.allSamplesRoles.includes(u.role as string)
-        ? u.update({ samples: DomainCollection(...samples) })
+        ? u.update({
+            sampleCodes: DomainCollection(...samples.map(s => s.sampleCode)),
+          })
         : u
     );
   }
@@ -27,13 +29,15 @@ export class UserRoleDriver implements IUserDriver {
   ): Promise<User | undefined> {
     const user = await this.driver.getByUserId(survey, samples, userid);
     return this.allSamplesRoles.includes(user?.role as string)
-      ? user?.update({ samples: DomainCollection(...samples) })
+      ? user?.update({
+          sampleCodes: DomainCollection(...samples.map(s => s.sampleCode)),
+        })
       : user;
   }
 
   async save(survey: Survey, user: User): Promise<Partial<User>> {
     const updatedUser = this.allSamplesRoles.includes(user.role as string)
-      ? user.update({ samples: DomainCollection(new Sample("__all__")) })
+      ? user.update({ sampleCodes: DomainCollection("__all__") })
       : user;
     return this.driver.save(survey, updatedUser);
   }

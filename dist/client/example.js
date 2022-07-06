@@ -95,7 +95,7 @@ const userObj = exampleAccounts
     return JSON.stringify(Object.assign(Object.assign({}, new User(user.surname, user.given_name, user.title, (_a = user.surveys["P11-05"]) === null || _a === void 0 ? void 0 : _a.role, user.email, user.phone, DomainCollection(), DomainCollection(), {
         id: user.id,
         userid: user.userid,
-    })), { samples: user.surveys["P11-05"].samples, participantIds: user.surveys["P11-05"].participantIds }));
+    })), { sampleCodes: user.surveys["P11-05"].samples, participantCodes: user.surveys["P11-05"].participants }));
 });
 function seedExample() {
     P11_05 = seedExampleSurvey();
@@ -122,9 +122,9 @@ function seedExampleSamples() {
 function seedExampleUsers() {
     return userObj.map(u => {
         const uu = JSON.parse(u);
-        return Object.assign(Object.create(User.prototype), Object.assign(Object.assign({}, uu), { samples: uu.samples[0] == "__all__"
-                ? P11_05_Samples
-                : uu.samples.map((sc) => P11_05_Samples.find(s => s.sampleCode == sc)) }));
+        return Object.assign(Object.create(User.prototype), Object.assign(Object.assign({}, uu), { sampleCodes: uu.sampleCodes[0] == "__all__"
+                ? P11_05_Samples.map(s => s.sampleCode)
+                : uu.sampleCodes }));
     });
 }
 function seedExampleDocuments() {

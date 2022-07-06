@@ -21,7 +21,7 @@ test("SAVE/UPDATE user", async (store, t) => {
   t.equal(targetAccount0?.given_name, "Henriette");
   t.equal(targetAccount0?.surname, "Monsseau");
   const surveys = {
-    "P11-05": { samples: ["001"], role: "writer" },
+    "P11-05": { samples: ["001"], role: "writer", participants: [] },
   };
   const update = new Account(targetAccount0?.userid as string, surveys, {
     given_name: "Henri",
