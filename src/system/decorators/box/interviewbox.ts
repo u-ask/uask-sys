@@ -16,7 +16,7 @@ export class InterviewBoxDriver implements IInterviewDriver {
     items = interview.items,
     options = new InterviewSaveOptions()
   ): Promise<PartialInterview> {
-    const secure = await this.box.needBox(survey, [participant.sample]);
+    const secure = await this.box.needBox(survey);
     if (secure) {
       if (!secure.workflow.pageSets.includes(interview.pageSet))
         return [{}, { items: [] }];

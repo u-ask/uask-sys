@@ -311,7 +311,7 @@ class UserWebDriver {
             userid: u.userid,
         });
     }
-    getByUserId(survey, samples, userid) {
+    getByUserId(survey, userid) {
         const route = `admin/${survey.name}/users/${userid}`;
         return this.client
             .get(route)

@@ -7,11 +7,7 @@ export class UserExampleDriver implements IUserDriver {
     return doImport(survey.name).then(i => [...((i.users as User[]) ?? [])]);
   }
 
-  getByUserId(
-    survey: Survey,
-    samples: Sample[],
-    userid: string
-  ): Promise<User | undefined> {
+  getByUserId(survey: Survey, userid: string): Promise<User | undefined> {
     return doImport(survey.name).then(i =>
       i.users?.find(u => u.userid == userid)
     );

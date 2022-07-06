@@ -1,5 +1,5 @@
 import { Knex } from "knex";
-import { execute, Participant, Sample, Survey, User } from "uask-dom";
+import { execute, Participant, Survey, User } from "uask-dom";
 import {
   IAuditDriver,
   IDocumentDriver,
@@ -31,15 +31,13 @@ import { InterviewMixinDriver } from "../../drivers/interview.js";
 import { ParticipantMixinDriver } from "../../drivers/participant.js";
 
 export class UserSystemDriver implements IUserDriver {
-  getAll(survey: Survey, samples: Sample[]): Promise<User[]> {
-    return this.getByUserId(survey, samples, "").then(u => [u as User]);
+  getAll(survey: Survey): Promise<User[]> {
+    return this.getByUserId(survey, "").then(u => [u as User]);
   }
 
   async getByUserId(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     survey: Survey,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    samples: Sample[],
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     userid: string
   ): Promise<User | undefined> {

@@ -69,15 +69,25 @@ export class ServerDrivers implements IDrivers {
   constructor(client: Knex, userid: string) {
     const store = new Store(client);
 
+    const sampleCache = Builder.decorate(SampleStoreDriver, store)
+      .withLogging()
+      .with(SampleCacheDriver)
+      .withLogging();
+
     const userDriver = Builder.decorate(UserTruenorthDriver, client)
       .withLogging()
-      .with(UserRoleDriver)
+      .with(UserRoleDriver, sampleCache.get())
       .withLogging()
       .with(UserManagedDriver, client);
 
     this.userDriver = userDriver.with(UserAutzDriver, userid).get();
 
     const notifier = new Notifier(userDriver.get(), userid);
+
+    this.sampleDriver = sampleCache
+      .with(SampleAutzDriver, userDriver.get(), userid)
+      .withLogging()
+      .get();
 
     this.surveyDriver = Builder.decorate(SurveyStoreDriver, store)
       .withLogging()
@@ -86,14 +96,6 @@ export class ServerDrivers implements IDrivers {
       .with(SurveyCacheDriver)
       .withLogging()
       .with(SurveyAutzDriver, userDriver.get(), userid)
-      .withLogging()
-      .get();
-
-    this.sampleDriver = Builder.decorate(SampleStoreDriver, store)
-      .withLogging()
-      .with(SampleCacheDriver)
-      .withLogging()
-      .with(SampleAutzDriver, userDriver.get(), userid)
       .withLogging()
       .get();
 

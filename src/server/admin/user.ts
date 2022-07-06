@@ -1,11 +1,5 @@
 import { Knex } from "knex";
-import {
-  DomainCollection,
-  IDomainCollection,
-  Sample,
-  Survey,
-  User,
-} from "uask-dom";
+import { DomainCollection, Survey, User } from "uask-dom";
 import { Account, AccountManager } from "uask-auth";
 import { IUserDriver } from "../../drivers/index.js";
 import {
@@ -17,7 +11,7 @@ import {
 export class UserTruenorthDriver implements IUserDriver {
   constructor(private client: Knex) {}
 
-  async getAll(survey: Survey, samples: Sample[]): Promise<User[]> {
+  async getAll(survey: Survey): Promise<User[]> {
     const accounts = await getAllAccountsForSurvey(survey.name, this.client);
     return accounts.map(
       a =>
@@ -28,17 +22,8 @@ export class UserTruenorthDriver implements IUserDriver {
           a.surveys[survey.name].role,
           a.email as string,
           a.phone as string,
-          a.surveys[survey.name].samples
-            ? (DomainCollection(
-                ...(a.surveys[survey.name].samples as string[]).map(
-                  s =>
-                    samples.find(sample => sample.sampleCode == s)?.sampleCode
-                )
-              ) as IDomainCollection<string>)
-            : DomainCollection(),
-          a.surveys[survey.name].participants
-            ? DomainCollection(...a.surveys[survey.name].participants)
-            : DomainCollection(),
+          DomainCollection(...(a.surveys[survey.name].samples ?? [])),
+          DomainCollection(...(a.surveys[survey.name].participants ?? [])),
           {
             password: a.password,
             id: a.id,
@@ -51,11 +36,7 @@ export class UserTruenorthDriver implements IUserDriver {
     );
   }
 
-  async getByUserId(
-    survey: Survey,
-    samples: Sample[],
-    userid: string
-  ): Promise<User | undefined> {
+  async getByUserId(survey: Survey, userid: string): Promise<User | undefined> {
     const account = await getAccountByUserId(userid, this.client);
     if (account) {
       return new User(
@@ -65,18 +46,8 @@ export class UserTruenorthDriver implements IUserDriver {
         account.surveys[survey.name].role,
         account.email as string,
         account.phone as string,
-        account.surveys[survey.name].samples
-          ? DomainCollection(
-              ...samples
-                .filter(s =>
-                  account.surveys[survey.name].samples.some(n => s.name == n)
-                )
-                .map(s => s.sampleCode)
-            )
-          : DomainCollection(),
-        account.surveys[survey.name].participants
-          ? DomainCollection(...account.surveys[survey.name].participants)
-          : DomainCollection(),
+        DomainCollection(...(account.surveys[survey.name].samples ?? [])),
+        DomainCollection(...(account.surveys[survey.name].participants ?? [])),
         {
           password: account.password,
           id: account.id,
@@ -95,7 +66,7 @@ export class UserTruenorthDriver implements IUserDriver {
     const account = await manager.getByUserid(user.userid as string);
     const surveys = account?.surveys ?? {};
     surveys[survey.name] = {
-      samples: (user.samples ?? []) as string[],
+      samples: (user.sampleCodes ?? []) as string[],
       role: user.workflow,
       participants: [...(user.participantCodes ?? [])],
     };
@@ -104,7 +75,6 @@ export class UserTruenorthDriver implements IUserDriver {
       surname: user.name,
       given_name: user.firstName,
       phone: user.phone,
-      samples: user.sampleCodes,
       password: user.password,
       id: user.id,
       email: user.email,

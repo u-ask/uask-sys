@@ -59,7 +59,9 @@ async function seed(store: Store) {
   const participants = await participantStoreDriver.getAll(survey, samples, {
     limit: Infinity,
   });
-  await Promise.all(participants.map(p => participantSummaryDriver.save(survey, p)));
+  await Promise.all(
+    participants.map(p => participantSummaryDriver.save(survey, p))
+  );
 }
 
 test("Summary DB driver get participant info", async (store, t) => {

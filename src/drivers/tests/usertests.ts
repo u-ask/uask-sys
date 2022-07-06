@@ -7,8 +7,7 @@ export async function testUsersGetBySurvey(
   t: Test
 ): Promise<void> {
   const survey = await drivers.surveyDriver.getByName("P11-05");
-  const samples = await drivers.sampleDriver.getAll(survey);
-  const users = await drivers.userDriver.getAll(survey, samples);
+  const users = await drivers.userDriver.getAll(survey);
   t.equal(users?.length, 8);
   const writer = users?.find(u => u.email == "writer001@example.com");
   t.deepLooseEqual(writer?.sampleCodes, DomainCollection("001"));
@@ -35,8 +34,7 @@ export async function testCreateNewUser(
     }
   );
   await drivers.userDriver.save(survey, newUser);
-  const samples = await drivers.sampleDriver.getAll(survey);
-  const users = await drivers.userDriver.getAll(survey, samples);
+  const users = await drivers.userDriver.getAll(survey);
   t.equal(users?.length, 9);
 }
 
@@ -61,8 +59,7 @@ export async function testUpdateExistingUser(
     }
   );
   await drivers.userDriver.save(survey, userUpdate);
-  const samples = await drivers.sampleDriver.getAll(survey);
-  const users = await drivers.userDriver.getAll(survey, samples);
+  const users = await drivers.userDriver.getAll(survey);
   t.equal(users?.length, 8);
   const updatedUser = users?.find(u => u.userid == "writer_s001");
   t.equal(updatedUser?.name, "Pottier");
@@ -75,11 +72,6 @@ export async function testGetUserById(
   t: Test
 ): Promise<void> {
   const survey = await drivers.surveyDriver.getByName("P11-05");
-  const samples = await drivers.sampleDriver.getAll(survey);
-  const user = await drivers.userDriver.getByUserId(
-    survey,
-    samples,
-    "administrator"
-  );
+  const user = await drivers.userDriver.getByUserId(survey, "administrator");
   t.equal(user?.email, "administrator@example.com");
 }

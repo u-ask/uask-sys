@@ -85,7 +85,7 @@ export class InterviewNotificationDriver implements IInterviewDriver {
     sample: Sample,
     workflows: IDomainCollection<Workflow>
   ) {
-    const users = await this.userDriver.getAll(survey, [sample]);
+    const users = await this.userDriver.getAll(survey);
     return users.filter(
       u =>
         workflows.some(w => w.name == u.workflow) &&

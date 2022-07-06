@@ -64,29 +64,31 @@ async function seed(store: Store) {
   const driver = new AuditExampleDriver(new ExampleDrivers());
   await Promise.all(
     P11_05_Participants.map(participant =>
-      driver.get(P11_05, { participantCode: participant.participantCode }).then(records =>
-        Promise.all(
-          records.map(r => {
-            const interview = participant.interviews.find(
-              i => i.nonce == r.target.nonce
-            );
-            const interviewItem = interview?.items.find(
-              i => i.pageItem.variableName == r.target.variableName
-            );
-            return store.client.table("audit_participants").insert({
-              surveyId: P11_05.__keys__?.id,
-              participantId: participant.__keys__?.id,
-              interviewId: interview?.__keys__?.id,
-              pageItemId: interviewItem?.__keys__?.pageItemId,
-              instance: interviewItem?.pageItem?.instance,
-              payload: JSON.stringify(r.changes),
-              operation: JSON.stringify(r.operation),
-              date: r.date,
-              userId: r.user,
-            });
-          })
+      driver
+        .get(P11_05, { participantCode: participant.participantCode })
+        .then(records =>
+          Promise.all(
+            records.map(r => {
+              const interview = participant.interviews.find(
+                i => i.nonce == r.target.nonce
+              );
+              const interviewItem = interview?.items.find(
+                i => i.pageItem.variableName == r.target.variableName
+              );
+              return store.client.table("audit_participants").insert({
+                surveyId: P11_05.__keys__?.id,
+                participantId: participant.__keys__?.id,
+                interviewId: interview?.__keys__?.id,
+                pageItemId: interviewItem?.__keys__?.pageItemId,
+                instance: interviewItem?.pageItem?.instance,
+                payload: JSON.stringify(r.changes),
+                operation: JSON.stringify(r.operation),
+                date: r.date,
+                userId: r.user,
+              });
+            })
+          )
         )
-      )
     )
   );
 }

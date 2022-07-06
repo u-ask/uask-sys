@@ -1,5 +1,5 @@
 import { Knex } from "knex";
-import { Survey, Sample, User } from "uask-dom";
+import { Survey, User } from "uask-dom";
 import { Account } from "uask-auth";
 import { IUserDriver } from "../../../drivers/index.js";
 import { getAccountByUserId } from "../../../server/admin/index.js";
@@ -7,16 +7,12 @@ import { getAccountByUserId } from "../../../server/admin/index.js";
 export class UserManagedDriver implements IUserDriver {
   constructor(private readonly driver: IUserDriver, private client: Knex) {}
 
-  getAll(survey: Survey, samples: Sample[]): Promise<User[]> {
-    return this.driver.getAll(survey, samples);
+  getAll(survey: Survey): Promise<User[]> {
+    return this.driver.getAll(survey);
   }
 
-  getByUserId(
-    survey: Survey,
-    samples: Sample[],
-    userid: string
-  ): Promise<User | undefined> {
-    return this.driver.getByUserId(survey, samples, userid);
+  getByUserId(survey: Survey, userid: string): Promise<User | undefined> {
+    return this.driver.getByUserId(survey, userid);
   }
 
   async save(survey: Survey, user: User): Promise<Partial<User>> {

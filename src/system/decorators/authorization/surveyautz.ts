@@ -26,7 +26,7 @@ export class SurveyAutzDriver implements ISurveyDriver {
   }
 
   private async update(survey: Survey): Promise<Partial<Survey>> {
-    const caller = await this.userDriver.getByUserId(survey, [], this.userid);
+    const caller = await this.userDriver.getByUserId(survey, this.userid);
     const am = new SurveyAuthorizationManager(survey, caller);
     if (!am.canSaveSurvey()) return Promise.reject(am.canSaveSurveyError());
     return this.driver.save(survey);

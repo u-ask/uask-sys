@@ -51,11 +51,7 @@ export async function getArchiveByName<P extends Protocol>(
     async (drivers, userid) => {
       const survey = await drivers.surveyDriver.getByName(req.params.name);
       const allsamples = await drivers.sampleDriver.getAll(survey);
-      const user = await drivers.userDriver.getByUserId(
-        survey,
-        allsamples,
-        userid
-      );
+      const user = await drivers.userDriver.getByUserId(survey, userid);
 
       const participants = req.params.sampleCode
         ? await drivers.participantDriver.getBySample(

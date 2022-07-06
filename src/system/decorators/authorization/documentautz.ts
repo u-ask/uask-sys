@@ -33,7 +33,7 @@ export class DocumentAutzDriver implements IDocumentDriver {
     hash: number,
     content: Uint8Array
   ): Promise<void> {
-    const caller = await this.userDriver.getByUserId(survey, [], this.userid);
+    const caller = await this.userDriver.getByUserId(survey, this.userid);
     const document = await this.driver.getByHash(survey, hash);
     const am = new SurveyAuthorizationManager(survey, caller);
     if (!am.canSaveDocument(document))
@@ -42,7 +42,7 @@ export class DocumentAutzDriver implements IDocumentDriver {
   }
 
   async delete(survey: Survey, hash: number): Promise<void> {
-    const caller = await this.userDriver.getByUserId(survey, [], this.userid);
+    const caller = await this.userDriver.getByUserId(survey, this.userid);
     const document = await this.driver.getByHash(survey, hash);
     const am = new SurveyAuthorizationManager(survey, caller);
     if (!am.canSaveDocument(document))
@@ -51,7 +51,7 @@ export class DocumentAutzDriver implements IDocumentDriver {
   }
 
   async save(survey: Survey, document: Document): Promise<Partial<Document>> {
-    const caller = await this.userDriver.getByUserId(survey, [], this.userid);
+    const caller = await this.userDriver.getByUserId(survey, this.userid);
     const am = new SurveyAuthorizationManager(survey, caller);
     if (!am.canSaveDocument(document))
       return Promise.reject(am.canSaveDocumentError(document));

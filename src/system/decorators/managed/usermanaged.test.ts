@@ -18,7 +18,6 @@ test("save two times a user with the same email", async (store, t) => {
   const newSurvey = b.get();
   await driver.surveyDriver.save(newSurvey);
   const survey = await driver.surveyDriver.getByName("P11-06");
-  const samples = await driver.sampleDriver.getAll(survey);
   const user = new User(
     "Monique",
     "Reigner",
@@ -29,7 +28,6 @@ test("save two times a user with the same email", async (store, t) => {
   await driver.userDriver.save(survey, user);
   const updatedUser = await driver.userDriver.getByUserId(
     survey,
-    samples,
     "writer001@example.com"
   );
   t.true(!!updatedUser);

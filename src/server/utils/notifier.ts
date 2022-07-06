@@ -4,7 +4,6 @@ import {
   InterviewItem,
   Metadata,
   Participant,
-  Sample,
   Survey,
 } from "uask-dom";
 import sgMail from "@sendgrid/mail";
@@ -35,7 +34,7 @@ export class Notifier implements INotifier {
     const code = typeof x == "string" ? x : (y as string);
     user =
       typeof user == "string"
-        ? await this.getUser(x as Survey, [], user)
+        ? await this.getUser(x as Survey, user)
         : (user as IContactable);
     const message = `Please use the code ${code} to authenticate.`;
     await this.notifyUser(user, message);
@@ -46,7 +45,7 @@ export class Notifier implements INotifier {
     survey: Survey,
     participant: Participant
   ): Promise<void> {
-    user = await this.getUser(survey, [], user);
+    user = await this.getUser(survey, user);
     const root = this.participantUrl(survey, participant, true);
     const message = `Please use ${root} to connect to your account in survey ${survey.name}`;
     await this.notifyUser(user, message);
@@ -59,7 +58,7 @@ export class Notifier implements INotifier {
     interview: Interview,
     item: InterviewItem
   ): Promise<void> {
-    user = await this.getUser(survey, [], user);
+    user = await this.getUser(survey, user);
     const interviewIndex =
       participant.interviews.findIndex(i => i.nonce == interview.nonce) + 1;
     const pageIndex =
@@ -89,17 +88,9 @@ export class Notifier implements INotifier {
     }/participant/${encodeURIComponent(participant.participantCode)}/form`;
   }
 
-  private getUser(
-    survey: Survey,
-    samples: Sample[],
-    user: IContactable | string
-  ) {
+  private getUser(survey: Survey, user: IContactable | string) {
     if (isContactable(user)) return Promise.resolve(user);
-    return this.userDriver?.getByUserId(
-      survey,
-      samples,
-      user
-    ) as Promise<IContactable>;
+    return this.userDriver?.getByUserId(survey, user) as Promise<IContactable>;
   }
 
   private notifyUser(user: IContactable, message: string): Promise<void> {

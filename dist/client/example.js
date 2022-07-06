@@ -297,7 +297,7 @@ class UserExampleDriver {
     getAll(survey) {
         return doImport(survey.name).then(i => { var _a; return [...((_a = i.users) !== null && _a !== void 0 ? _a : [])]; });
     }
-    getByUserId(survey, samples, userid) {
+    getByUserId(survey, userid) {
         return doImport(survey.name).then(i => { var _a; return (_a = i.users) === null || _a === void 0 ? void 0 : _a.find(u => u.userid == userid); });
     }
     save(survey, user) {

@@ -34,11 +34,7 @@ class UserWebDriver implements IUserDriver {
     );
   }
 
-  getByUserId(
-    survey: Survey,
-    samples: Sample[],
-    userid: string
-  ): Promise<User | undefined> {
+  getByUserId(survey: Survey, userid: string): Promise<User | undefined> {
     const route = `admin/${survey.name}/users/${userid}`;
     return this.client
       .get(route)

@@ -1,5 +1,5 @@
 import restana from 'restana';
-import { _ as __awaiter, I as InterviewSaveOptions, i as interviewItemDeserialize, p as participantSerialize, s as surveySerialize, a as surveyDeserialize, P as ParticipantSummary, c as config, b as __rest, D as Document, d as adminRouter, e as errorMessage, f as isManaged, g as assertNoSubset, S as Store, B as Builder, U as UserTruenorthDriver, h as UserManagedDriver, j as SurveyStoreDriver, k as SurveyReconciliationDriver, l as SurveyCacheDriver, m as SampleStoreDriver, n as SampleCacheDriver, o as ParticipantStoreDriver, q as ParticipantReconciliationDriver, r as ParticipantMixinDriver, t as ParticipantCacheDriver, u as ParticipantAuditDriver, v as ParticipantSummaryDriver, w as InterviewStoreDriver, x as InterviewAuditDriver, y as InterviewManagedDriver, z as InterviewMixinDriver, A as InterviewRuleDriver, C as SummaryDbDriver, E as AuditDbDriver, K as KpiGenericDriver } from './system.js';
+import { _ as __awaiter, I as InterviewSaveOptions, i as interviewItemDeserialize, p as participantSerialize, s as surveySerialize, a as surveyDeserialize, P as ParticipantSummary, c as config, b as __rest, D as Document, d as adminRouter, e as errorMessage, f as isManaged, g as assertNoSubset, S as Store, B as Builder, h as SampleStoreDriver, j as SampleCacheDriver, U as UserTruenorthDriver, k as UserManagedDriver, l as SurveyStoreDriver, m as SurveyReconciliationDriver, n as SurveyCacheDriver, o as ParticipantStoreDriver, q as ParticipantReconciliationDriver, r as ParticipantMixinDriver, t as ParticipantCacheDriver, u as ParticipantAuditDriver, v as ParticipantSummaryDriver, w as InterviewStoreDriver, x as InterviewAuditDriver, y as InterviewManagedDriver, z as InterviewMixinDriver, A as InterviewRuleDriver, C as SummaryDbDriver, E as AuditDbDriver, K as KpiGenericDriver } from './system.js';
 import Knex from 'knex';
 import { graphqlHTTP } from 'express-graphql';
 import helmet from 'helmet';
@@ -119,7 +119,7 @@ function getArchiveByName(driverFactory, req, res) {
         return driverFactory((drivers, userid) => __awaiter(this, void 0, void 0, function* () {
             const survey = yield drivers.surveyDriver.getByName(req.params.name);
             const allsamples = yield drivers.sampleDriver.getAll(survey);
-            const user = yield drivers.userDriver.getByUserId(survey, allsamples, userid);
+            const user = yield drivers.userDriver.getByUserId(survey, userid);
             const participants = req.params.sampleCode
                 ? yield drivers.participantDriver.getBySample(survey, allsamples.find(s => s.sampleCode == req.params.sampleCode))
                 : yield drivers.participantDriver
@@ -645,7 +645,7 @@ class Notifier {
             const code = typeof x == "string" ? x : y;
             user =
                 typeof user == "string"
-                    ? yield this.getUser(x, [], user)
+                    ? yield this.getUser(x, user)
                     : user;
             const message = `Please use the code ${code} to authenticate.`;
             yield this.notifyUser(user, message);
@@ -653,7 +653,7 @@ class Notifier {
     }
     notifyParticipantAccount(user, survey, participant) {
         return __awaiter(this, void 0, void 0, function* () {
-            user = yield this.getUser(survey, [], user);
+            user = yield this.getUser(survey, user);
             const root = this.participantUrl(survey, participant, true);
             const message = `Please use ${root} to connect to your account in survey ${survey.name}`;
             yield this.notifyUser(user, message);
@@ -661,7 +661,7 @@ class Notifier {
     }
     notifyEvent(user, survey, participant, interview, item) {
         return __awaiter(this, void 0, void 0, function* () {
-            user = yield this.getUser(survey, [], user);
+            user = yield this.getUser(survey, user);
             const interviewIndex = participant.interviews.findIndex(i => i.nonce == interview.nonce) + 1;
             const pageIndex = interview.pageSet.pages.indexOf(interview.pageSet.getPagesForItem(item.pageItem)[0]) + 1;
             const root = this.participantUrl(survey, participant, false);
@@ -679,11 +679,11 @@ class Notifier {
     participantUrl(survey, participant, epro) {
         return `${this.origin}/${encodeURIComponent(survey.name)}${epro ? "/epro" : ""}/participant/${encodeURIComponent(participant.participantCode)}/form`;
     }
-    getUser(survey, samples, user) {
+    getUser(survey, user) {
         var _a;
         if (isContactable(user))
             return Promise.resolve(user);
-        return (_a = this.userDriver) === null || _a === void 0 ? void 0 : _a.getByUserId(survey, samples, user);
+        return (_a = this.userDriver) === null || _a === void 0 ? void 0 : _a.getByUserId(survey, user);
     }
     notifyUser(user, message) {
         var _a, _b;
@@ -1763,15 +1763,15 @@ class UserAutzDriver {
         this.driver = driver;
         this.callerid = callerid;
     }
-    getAll(survey, samples) {
-        return this.driver.getAll(survey, samples);
+    getAll(survey) {
+        return this.driver.getAll(survey);
     }
-    getByUserId(survey, samples, userid) {
-        return this.driver.getByUserId(survey, samples, userid);
+    getByUserId(survey, userid) {
+        return this.driver.getByUserId(survey, userid);
     }
     save(survey, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            const caller = yield this.getByUserId(survey, [], this.callerid);
+            const caller = yield this.getByUserId(survey, this.callerid);
             const am = new SurveyAuthorizationManager(survey, caller);
             if (user.userid != this.callerid && !am.canSaveUser())
                 return Promise.reject(am.canSaveUserError());
@@ -1788,7 +1788,7 @@ class ParticipantBoxDriver {
     getAll(survey, samples, options = {}) {
         return __awaiter(this, void 0, void 0, function* () {
             const participants = yield this.driver.getAll(survey, samples, options);
-            const secure = yield this.box.needBox(survey, samples);
+            const secure = yield this.box.needBox(survey);
             if (secure)
                 return participants.map(participant => secure.box(survey, participant));
             return participants;
@@ -1797,7 +1797,7 @@ class ParticipantBoxDriver {
     getByParticipantCode(survey, samples, participantCode) {
         return __awaiter(this, void 0, void 0, function* () {
             const participant = yield this.driver.getByParticipantCode(survey, samples, participantCode);
-            const secure = yield this.box.needBox(survey, samples);
+            const secure = yield this.box.needBox(survey);
             if (secure)
                 return secure.box(survey, participant, { memoize: true });
             return participant;
@@ -1806,7 +1806,7 @@ class ParticipantBoxDriver {
     getBySample(survey, sample, options = {}) {
         return __awaiter(this, void 0, void 0, function* () {
             const participants = yield this.driver.getBySample(survey, sample, options);
-            const secure = yield this.box.needBox(survey, [sample]);
+            const secure = yield this.box.needBox(survey);
             if (secure)
                 return participants.map(participant => secure.box(survey, participant));
             return participants;
@@ -1815,7 +1815,7 @@ class ParticipantBoxDriver {
     save(survey, participant) {
         return __awaiter(this, void 0, void 0, function* () {
             const boxInstance = participant.participantCode
-                ? yield this.box.needBox(survey, [participant.sample])
+                ? yield this.box.needBox(survey)
                 : false;
             if (boxInstance) {
                 const restored = yield boxInstance.unbox(survey, participant);
@@ -1833,7 +1833,7 @@ class InterviewBoxDriver {
     }
     save(survey, participant, interview, items = interview.items, options = new InterviewSaveOptions()) {
         return __awaiter(this, void 0, void 0, function* () {
-            const secure = yield this.box.needBox(survey, [participant.sample]);
+            const secure = yield this.box.needBox(survey);
             if (secure) {
                 if (!secure.workflow.pageSets.includes(interview.pageSet))
                     return [{}, { items: [] }];
@@ -1886,9 +1886,9 @@ class ParticipantBox {
                 : i.update({ items: DomainCollection() })),
         });
     }
-    needBox(survey, samples) {
+    needBox(survey) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.userDriver.getByUserId(survey, samples, this.userid);
+            const user = yield this.userDriver.getByUserId(survey, this.userid);
             if (!user)
                 throw "unknown user";
             const workflow = survey.workflow(user.workflow);
@@ -1933,7 +1933,7 @@ class InterviewAutzDriver {
     }
     delete(survey, participant, interview) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.userDriver.getByUserId(survey, [participant.sample], this.userid);
+            const user = yield this.userDriver.getByUserId(survey, this.userid);
             const am = new ParticipantAuthorizationManager(survey, participant, user);
             if (!am.canDelete())
                 return Promise.reject(am.canDeleteError());
@@ -1942,7 +1942,7 @@ class InterviewAutzDriver {
     }
     getAutz(survey, participant) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.userDriver.getByUserId(survey, [participant.sample], this.userid);
+            const user = yield this.userDriver.getByUserId(survey, this.userid);
             return new ParticipantAuthorizationManager(survey, participant, user);
         });
     }
@@ -1998,7 +1998,7 @@ class InterviewNotificationDriver {
     }
     getWorkflowUsers(survey, sample, workflows) {
         return __awaiter(this, void 0, void 0, function* () {
-            const users = yield this.userDriver.getAll(survey, [sample]);
+            const users = yield this.userDriver.getAll(survey);
             return users.filter(u => {
                 var _a;
                 return workflows.some(w => w.name == u.workflow) &&
@@ -2019,32 +2019,41 @@ class InterviewNotificationDriver {
 }
 
 class UserRoleDriver {
-    constructor(driver) {
+    constructor(driver, sampleDriver) {
         this.driver = driver;
+        this.sampleDriver = sampleDriver;
         this.allSamplesRoles = [
             "administrator",
             "developer",
             "superadministrator",
         ];
     }
-    getAll(survey, samples) {
+    getAll(survey) {
         return __awaiter(this, void 0, void 0, function* () {
-            const users = yield this.driver.getAll(survey, samples);
-            return users.map(u => this.allSamplesRoles.includes(u.role)
-                ? u.update({
-                    sampleCodes: DomainCollection(...samples.map(s => s.sampleCode)),
-                })
-                : u);
+            const users = yield this.driver.getAll(survey);
+            const samples = yield this.sampleDriver.getAll(survey);
+            return users.map(u => {
+                if (this.allSamplesRoles.includes(u.role)) {
+                    return u.update({
+                        sampleCodes: DomainCollection(...samples.map(s => s.sampleCode)),
+                    });
+                }
+                return u;
+            });
         });
     }
-    getByUserId(survey, samples, userid) {
+    getByUserId(survey, userid) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.driver.getByUserId(survey, samples, userid);
-            return this.allSamplesRoles.includes(user === null || user === void 0 ? void 0 : user.role)
-                ? user === null || user === void 0 ? void 0 : user.update({
+            const user = yield this.driver.getByUserId(survey, userid);
+            if (typeof user == "undefined")
+                return undefined;
+            const samples = yield this.sampleDriver.getAll(survey);
+            if (this.allSamplesRoles.includes(user.role)) {
+                return user.update({
                     sampleCodes: DomainCollection(...samples.map(s => s.sampleCode)),
-                })
-                : user;
+                });
+            }
+            return user;
         });
     }
     save(survey, user) {
@@ -2077,7 +2086,7 @@ class SurveyAutzDriver {
     }
     update(survey) {
         return __awaiter(this, void 0, void 0, function* () {
-            const caller = yield this.userDriver.getByUserId(survey, [], this.userid);
+            const caller = yield this.userDriver.getByUserId(survey, this.userid);
             const am = new SurveyAuthorizationManager(survey, caller);
             if (!am.canSaveSurvey())
                 return Promise.reject(am.canSaveSurveyError());
@@ -2107,7 +2116,7 @@ class SampleAutzDriver {
     }
     save(survey, sample) {
         return __awaiter(this, void 0, void 0, function* () {
-            const caller = yield this.userDriver.getByUserId(survey, [], this.userid);
+            const caller = yield this.userDriver.getByUserId(survey, this.userid);
             const am = new SurveyAuthorizationManager(survey, caller);
             if (!am.canSaveSample())
                 return Promise.reject(am.canSaveSampleError());
@@ -2163,8 +2172,7 @@ class ParticipantAutzDriver {
     }
     getAutz(survey, y) {
         return __awaiter(this, void 0, void 0, function* () {
-            const samples = y instanceof Participant ? [y.sample] : y;
-            const user = yield this.userDriver.getByUserId(survey, samples, this.userId);
+            const user = yield this.userDriver.getByUserId(survey, this.userId);
             return y instanceof Participant
                 ? new ParticipantAuthorizationManager(survey, y, user)
                 : new SurveyAuthorizationManager(survey, user);
@@ -2194,8 +2202,7 @@ class SummaryAutzDriver {
     }
     getAutz(survey) {
         return __awaiter(this, void 0, void 0, function* () {
-            const samples = yield this.sampleDriver.getAll(survey);
-            const user = yield this.uderDriver.getByUserId(survey, samples, this.userId);
+            const user = yield this.uderDriver.getByUserId(survey, this.userId);
             return new SurveyAuthorizationManager(survey, user);
         });
     }
@@ -2219,8 +2226,7 @@ class AuditAutzDriver {
         return __awaiter(this, void 0, void 0, function* () {
             const records = yield this.driver.get(survey, target, operations);
             if (records.length > 0) {
-                const samples = yield this.sampleDriver.getAll(survey);
-                const user = yield this.userDriver.getByUserId(survey, samples, this.userid);
+                const user = yield this.userDriver.getByUserId(survey, this.userid);
                 const am = new SurveyAuthorizationManager(survey, user);
                 if (!am.canReadSample(records[0].sampleCode))
                     return Promise.reject(am.canReadSampleError(records[0].sampleCode));
@@ -2247,7 +2253,7 @@ class DocumentAutzDriver {
     }
     saveContent(survey, hash, content) {
         return __awaiter(this, void 0, void 0, function* () {
-            const caller = yield this.userDriver.getByUserId(survey, [], this.userid);
+            const caller = yield this.userDriver.getByUserId(survey, this.userid);
             const document = yield this.driver.getByHash(survey, hash);
             const am = new SurveyAuthorizationManager(survey, caller);
             if (!am.canSaveDocument(document))
@@ -2257,7 +2263,7 @@ class DocumentAutzDriver {
     }
     delete(survey, hash) {
         return __awaiter(this, void 0, void 0, function* () {
-            const caller = yield this.userDriver.getByUserId(survey, [], this.userid);
+            const caller = yield this.userDriver.getByUserId(survey, this.userid);
             const document = yield this.driver.getByHash(survey, hash);
             const am = new SurveyAuthorizationManager(survey, caller);
             if (!am.canSaveDocument(document))
@@ -2267,7 +2273,7 @@ class DocumentAutzDriver {
     }
     save(survey, document) {
         return __awaiter(this, void 0, void 0, function* () {
-            const caller = yield this.userDriver.getByUserId(survey, [], this.userid);
+            const caller = yield this.userDriver.getByUserId(survey, this.userid);
             const am = new SurveyAuthorizationManager(survey, caller);
             if (!am.canSaveDocument(document))
                 return Promise.reject(am.canSaveDocumentError(document));
@@ -2279,13 +2285,21 @@ class DocumentAutzDriver {
 class ServerDrivers {
     constructor(client, userid) {
         const store = new Store(client);
+        const sampleCache = Builder.decorate(SampleStoreDriver, store)
+            .withLogging()
+            .with(SampleCacheDriver)
+            .withLogging();
         const userDriver = Builder.decorate(UserTruenorthDriver, client)
             .withLogging()
-            .with(UserRoleDriver)
+            .with(UserRoleDriver, sampleCache.get())
             .withLogging()
             .with(UserManagedDriver, client);
         this.userDriver = userDriver.with(UserAutzDriver, userid).get();
         const notifier = new Notifier(userDriver.get(), userid);
+        this.sampleDriver = sampleCache
+            .with(SampleAutzDriver, userDriver.get(), userid)
+            .withLogging()
+            .get();
         this.surveyDriver = Builder.decorate(SurveyStoreDriver, store)
             .withLogging()
             .with(SurveyReconciliationDriver)
@@ -2293,13 +2307,6 @@ class ServerDrivers {
             .with(SurveyCacheDriver)
             .withLogging()
             .with(SurveyAutzDriver, userDriver.get(), userid)
-            .withLogging()
-            .get();
-        this.sampleDriver = Builder.decorate(SampleStoreDriver, store)
-            .withLogging()
-            .with(SampleCacheDriver)
-            .withLogging()
-            .with(SampleAutzDriver, userDriver.get(), userid)
             .withLogging()
             .get();
         const participantStore = Builder.decorate(ParticipantStoreDriver, store);

@@ -50,8 +50,7 @@ export class SummaryAutzDriver implements ISummaryDriver {
   }
 
   private async getAutz(survey: Survey) {
-    const samples = await this.sampleDriver.getAll(survey);
-    const user = await this.uderDriver.getByUserId(survey, samples, this.userId);
+    const user = await this.uderDriver.getByUserId(survey, this.userId);
     return new SurveyAuthorizationManager(survey, user);
   }
 

@@ -87,12 +87,7 @@ export class ParticipantAutzDriver
     participant: Participant
   ): Promise<ParticipantAuthorizationManager>;
   private async getAutz(survey: Survey, y: Participant | Sample[]) {
-    const samples = y instanceof Participant ? [y.sample] : y;
-    const user = await this.userDriver.getByUserId(
-      survey,
-      samples,
-      this.userId
-    );
+    const user = await this.userDriver.getByUserId(survey, this.userId);
     return y instanceof Participant
       ? new ParticipantAuthorizationManager(survey, y, user)
       : new SurveyAuthorizationManager(survey, user);

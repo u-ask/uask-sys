@@ -1,4 +1,4 @@
-import { S as Store, B as Builder, j as SurveyStoreDriver, k as SurveyReconciliationDriver, m as SampleStoreDriver, o as ParticipantStoreDriver, v as ParticipantSummaryDriver, r as ParticipantMixinDriver, w as InterviewStoreDriver, y as InterviewManagedDriver, z as InterviewMixinDriver, F as __asyncGenerator, G as __await, _ as __awaiter, H as __asyncDelegator, J as __asyncValues, c as config, C as SummaryDbDriver } from './system.js';
+import { S as Store, B as Builder, l as SurveyStoreDriver, m as SurveyReconciliationDriver, h as SampleStoreDriver, o as ParticipantStoreDriver, v as ParticipantSummaryDriver, r as ParticipantMixinDriver, w as InterviewStoreDriver, y as InterviewManagedDriver, z as InterviewMixinDriver, F as __asyncGenerator, G as __await, _ as __awaiter, H as __asyncDelegator, J as __asyncValues, c as config, C as SummaryDbDriver } from './system.js';
 import Knex from 'knex';
 import { execute, User } from 'uask-dom';
 import 'fast-deep-equal';
@@ -9,10 +9,10 @@ import 'debug';
 import 'stealer';
 
 class UserSystemDriver {
-    getAll(survey, samples) {
-        return this.getByUserId(survey, samples, "").then(u => [u]);
+    getAll(survey) {
+        return this.getByUserId(survey, "").then(u => [u]);
     }
-    getByUserId(survey, samples, userid) {
+    getByUserId(survey, userid) {
         return __awaiter(this, void 0, void 0, function* () {
             return new User("system");
         });

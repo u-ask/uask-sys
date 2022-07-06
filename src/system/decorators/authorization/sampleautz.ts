@@ -18,7 +18,7 @@ export class SampleAutzDriver implements ISampleDriver {
   }
 
   async save(survey: Survey, sample: Sample): Promise<Partial<Sample>> {
-    const caller = await this.userDriver.getByUserId(survey, [], this.userid);
+    const caller = await this.userDriver.getByUserId(survey, this.userid);
     const am = new SurveyAuthorizationManager(survey, caller);
     if (!am.canSaveSample()) return Promise.reject(am.canSaveSampleError());
     return this.driver.save(survey, sample);

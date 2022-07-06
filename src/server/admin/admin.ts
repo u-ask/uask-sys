@@ -10,8 +10,7 @@ async function getAllAccountsForSurvey<P extends Protocol>(
   return driverFactory(
     async drivers => {
       const survey = await drivers.surveyDriver.getByName(req.params.survey);
-      const samples = await drivers.sampleDriver.getAll(survey);
-      const users = await drivers.userDriver.getAll(survey, samples);
+      const users = await drivers.userDriver.getAll(survey);
       res.send(users);
     },
     { req, res }
@@ -26,10 +25,8 @@ async function getAccountByIdForSurvey<P extends Protocol>(
   return driverFactory(
     async drivers => {
       const survey = await drivers.surveyDriver.getByName(req.params.survey);
-      const samples = await drivers.sampleDriver.getAll(survey);
       const user = await drivers.userDriver.getByUserId(
         survey,
-        samples,
         req.params.userid
       );
       res.send(user);

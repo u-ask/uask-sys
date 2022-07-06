@@ -39,7 +39,7 @@ test("get a user by userid", async t => {
 function buildRoleDrivers() {
   const drivers = new ExampleDrivers();
   Object.assign(drivers, {
-    userDriver: new UserRoleDriver(drivers.userDriver),
+    userDriver: new UserRoleDriver(drivers.userDriver, drivers.sampleDriver),
   });
   return drivers;
 }

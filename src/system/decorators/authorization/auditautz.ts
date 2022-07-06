@@ -23,8 +23,7 @@ export class AuditAutzDriver implements IAuditDriver {
   ): Promise<AuditRecord[]> {
     const records = await this.driver.get(survey, target, operations);
     if (records.length > 0) {
-      const samples = await this.sampleDriver.getAll(survey);
-      const user = await this.userDriver.getByUserId(survey, samples, this.userid);
+      const user = await this.userDriver.getByUserId(survey, this.userid);
       const am = new SurveyAuthorizationManager(survey, user);
       if (!am.canReadSample(records[0].sampleCode))
         return Promise.reject(am.canReadSampleError(records[0].sampleCode));

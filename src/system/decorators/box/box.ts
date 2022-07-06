@@ -1,10 +1,4 @@
-import {
-  Survey,
-  Participant,
-  DomainCollection,
-  Sample,
-  Workflow,
-} from "uask-dom";
+import { Survey, Participant, DomainCollection, Workflow } from "uask-dom";
 import { Stealer } from "stealer";
 import { IParticipantDriver, IUserDriver } from "../../../drivers/index.js";
 import fnv1a from "@sindresorhus/fnv1a";
@@ -77,15 +71,8 @@ export class ParticipantBox {
     });
   }
 
-  async needBox(
-    survey: Survey,
-    samples: Sample[]
-  ): Promise<false | BoxInstance> {
-    const user = await this.userDriver.getByUserId(
-      survey,
-      samples,
-      this.userid
-    );
+  async needBox(survey: Survey): Promise<false | BoxInstance> {
+    const user = await this.userDriver.getByUserId(survey, this.userid);
     if (!user) throw "unknown user";
     const workflow = survey.workflow(user.workflow);
     if (!workflow) return false;

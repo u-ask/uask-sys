@@ -1120,8 +1120,7 @@ function getAllAccountsForSurvey(driverFactory, req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         return driverFactory((drivers) => __awaiter(this, void 0, void 0, function* () {
             const survey = yield drivers.surveyDriver.getByName(req.params.survey);
-            const samples = yield drivers.sampleDriver.getAll(survey);
-            const users = yield drivers.userDriver.getAll(survey, samples);
+            const users = yield drivers.userDriver.getAll(survey);
             res.send(users);
         }), { req, res });
     });
@@ -1130,8 +1129,7 @@ function getAccountByIdForSurvey(driverFactory, req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         return driverFactory((drivers) => __awaiter(this, void 0, void 0, function* () {
             const survey = yield drivers.surveyDriver.getByName(req.params.survey);
-            const samples = yield drivers.sampleDriver.getAll(survey);
-            const user = yield drivers.userDriver.getByUserId(survey, samples, req.params.userid);
+            const user = yield drivers.userDriver.getByUserId(survey, req.params.userid);
             res.send(user);
         }), { req, res });
     });
@@ -1169,34 +1167,28 @@ class UserTruenorthDriver {
     constructor(client) {
         this.client = client;
     }
-    getAll(survey, samples) {
+    getAll(survey) {
         return __awaiter(this, void 0, void 0, function* () {
             const accounts = yield getAllAccountsForSurvey$1(survey.name, this.client);
-            return accounts.map(a => new User(a.surname, a.given_name, a.title, a.surveys[survey.name].role, a.email, a.phone, a.surveys[survey.name].samples
-                ? DomainCollection(...a.surveys[survey.name].samples.map(s => { var _a; return (_a = samples.find(sample => sample.sampleCode == s)) === null || _a === void 0 ? void 0 : _a.sampleCode; }))
-                : DomainCollection(), a.surveys[survey.name].participants
-                ? DomainCollection(...a.surveys[survey.name].participants)
-                : DomainCollection(), {
-                password: a.password,
-                id: a.id,
-                salt: a.salt,
-                email_verified: a.email_verified,
-                userid: a.userid,
-                extra_infos: a.extra_infos,
-            }));
+            return accounts.map(a => {
+                var _a, _b;
+                return new User(a.surname, a.given_name, a.title, a.surveys[survey.name].role, a.email, a.phone, DomainCollection(...((_a = a.surveys[survey.name].samples) !== null && _a !== void 0 ? _a : [])), DomainCollection(...((_b = a.surveys[survey.name].participants) !== null && _b !== void 0 ? _b : [])), {
+                    password: a.password,
+                    id: a.id,
+                    salt: a.salt,
+                    email_verified: a.email_verified,
+                    userid: a.userid,
+                    extra_infos: a.extra_infos,
+                });
+            });
         });
     }
-    getByUserId(survey, samples, userid) {
+    getByUserId(survey, userid) {
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const account = yield getAccountByUserId(userid, this.client);
             if (account) {
-                return new User(account.surname, account.given_name, account.title, account.surveys[survey.name].role, account.email, account.phone, account.surveys[survey.name].samples
-                    ? DomainCollection(...samples
-                        .filter(s => account.surveys[survey.name].samples.some(n => s.name == n))
-                        .map(s => s.sampleCode))
-                    : DomainCollection(), account.surveys[survey.name].participants
-                    ? DomainCollection(...account.surveys[survey.name].participants)
-                    : DomainCollection(), {
+                return new User(account.surname, account.given_name, account.title, account.surveys[survey.name].role, account.email, account.phone, DomainCollection(...((_a = account.surveys[survey.name].samples) !== null && _a !== void 0 ? _a : [])), DomainCollection(...((_b = account.surveys[survey.name].participants) !== null && _b !== void 0 ? _b : [])), {
                     password: account.password,
                     id: account.id,
                     salt: account.salt,
@@ -1245,11 +1237,11 @@ class UserManagedDriver {
         this.driver = driver;
         this.client = client;
     }
-    getAll(survey, samples) {
-        return this.driver.getAll(survey, samples);
+    getAll(survey) {
+        return this.driver.getAll(survey);
     }
-    getByUserId(survey, samples, userid) {
-        return this.driver.getByUserId(survey, samples, userid);
+    getByUserId(survey, userid) {
+        return this.driver.getByUserId(survey, userid);
     }
     save(survey, user) {
         var _a, _b, _c, _d;
@@ -3908,4 +3900,4 @@ class Store extends Drivers {
     }
 }
 
-export { InterviewRuleDriver as A, Builder as B, SummaryDbDriver as C, Document as D, AuditDbDriver as E, __asyncGenerator as F, __await as G, __asyncDelegator as H, InterviewSaveOptions as I, __asyncValues as J, KpiGenericDriver as K, ParticipantSummary as P, Store as S, UserTruenorthDriver as U, __awaiter as _, surveyDeserialize as a, __rest as b, config as c, adminRouter as d, errorMessage as e, isManaged as f, assertNoSubset as g, UserManagedDriver as h, interviewItemDeserialize as i, SurveyStoreDriver as j, SurveyReconciliationDriver as k, SurveyCacheDriver as l, SampleStoreDriver as m, SampleCacheDriver as n, ParticipantStoreDriver as o, participantSerialize as p, ParticipantReconciliationDriver as q, ParticipantMixinDriver as r, surveySerialize as s, ParticipantCacheDriver as t, ParticipantAuditDriver as u, ParticipantSummaryDriver as v, InterviewStoreDriver as w, InterviewAuditDriver as x, InterviewManagedDriver as y, InterviewMixinDriver as z };
+export { InterviewRuleDriver as A, Builder as B, SummaryDbDriver as C, Document as D, AuditDbDriver as E, __asyncGenerator as F, __await as G, __asyncDelegator as H, InterviewSaveOptions as I, __asyncValues as J, KpiGenericDriver as K, ParticipantSummary as P, Store as S, UserTruenorthDriver as U, __awaiter as _, surveyDeserialize as a, __rest as b, config as c, adminRouter as d, errorMessage as e, isManaged as f, assertNoSubset as g, SampleStoreDriver as h, interviewItemDeserialize as i, SampleCacheDriver as j, UserManagedDriver as k, SurveyStoreDriver as l, SurveyReconciliationDriver as m, SurveyCacheDriver as n, ParticipantStoreDriver as o, participantSerialize as p, ParticipantReconciliationDriver as q, ParticipantMixinDriver as r, surveySerialize as s, ParticipantCacheDriver as t, ParticipantAuditDriver as u, ParticipantSummaryDriver as v, InterviewStoreDriver as w, InterviewAuditDriver as x, InterviewManagedDriver as y, InterviewMixinDriver as z };

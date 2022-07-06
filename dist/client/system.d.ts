@@ -76,8 +76,8 @@ declare class SummaryGenericDriver implements ISummaryDriver {
 }
 
 interface IUserDriver {
-    getAll(survey: Survey$1, samples: Sample[]): Promise<User[]>;
-    getByUserId(survey: Survey$1, samples: Sample[], userid: string): Promise<User | undefined>;
+    getAll(survey: Survey$1): Promise<User[]>;
+    getByUserId(survey: Survey$1, userid: string): Promise<User | undefined>;
     save(survey: Survey$1, user: User): Promise<Partial<User>>;
 }
 

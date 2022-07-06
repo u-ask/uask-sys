@@ -50,22 +50,14 @@ export class InterviewAutzDriver
     participant: Participant,
     interview: Interview
   ): Promise<void> {
-    const user = await this.userDriver.getByUserId(
-      survey,
-      [participant.sample],
-      this.userid
-    );
+    const user = await this.userDriver.getByUserId(survey, this.userid);
     const am = new ParticipantAuthorizationManager(survey, participant, user);
     if (!am.canDelete()) return Promise.reject(am.canDeleteError());
     return this.driver.delete(survey, participant, interview);
   }
 
   private async getAutz(survey: Survey, participant: Participant) {
-    const user = await this.userDriver.getByUserId(
-      survey,
-      [participant.sample],
-      this.userid
-    );
+    const user = await this.userDriver.getByUserId(survey, this.userid);
     return new ParticipantAuthorizationManager(survey, participant, user);
   }
 

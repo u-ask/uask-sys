@@ -1,5 +1,5 @@
-import { Survey, User, Sample, DomainCollection } from "uask-dom";
-import { IUserDriver } from "../../../drivers/index.js";
+import { Survey, User, DomainCollection } from "uask-dom";
+import { ISampleDriver, IUserDriver } from "../../../drivers/index.js";
 
 export class UserRoleDriver implements IUserDriver {
   private allSamplesRoles = [
@@ -8,31 +8,35 @@ export class UserRoleDriver implements IUserDriver {
     "superadministrator",
   ];
 
-  constructor(private readonly driver: IUserDriver) {}
+  constructor(
+    private readonly driver: IUserDriver,
+    private readonly sampleDriver: ISampleDriver
+  ) {}
 
-  async getAll(survey: Survey, samples: Sample[]): Promise<User[]> {
-    const users = await this.driver.getAll(survey, samples);
+  async getAll(survey: Survey): Promise<User[]> {
+    const users = await this.driver.getAll(survey);
 
-    return users.map(u =>
-      this.allSamplesRoles.includes(u.role as string)
-        ? u.update({
-            sampleCodes: DomainCollection(...samples.map(s => s.sampleCode)),
-          })
-        : u
-    );
+    const samples = await this.sampleDriver.getAll(survey);
+    return users.map(u => {
+      if (this.allSamplesRoles.includes(u.role as string)) {
+        return u.update({
+          sampleCodes: DomainCollection(...samples.map(s => s.sampleCode)),
+        });
+      }
+      return u;
+    });
   }
 
-  async getByUserId(
-    survey: Survey,
-    samples: Sample[],
-    userid: string
-  ): Promise<User | undefined> {
-    const user = await this.driver.getByUserId(survey, samples, userid);
-    return this.allSamplesRoles.includes(user?.role as string)
-      ? user?.update({
-          sampleCodes: DomainCollection(...samples.map(s => s.sampleCode)),
-        })
-      : user;
+  async getByUserId(survey: Survey, userid: string): Promise<User | undefined> {
+    const user = await this.driver.getByUserId(survey, userid);
+    if (typeof user == "undefined") return undefined;
+    const samples = await this.sampleDriver.getAll(survey);
+    if (this.allSamplesRoles.includes(user.role as string)) {
+      return user.update({
+        sampleCodes: DomainCollection(...samples.map(s => s.sampleCode)),
+      });
+    }
+    return user;
   }
 
   async save(survey: Survey, user: User): Promise<Partial<User>> {
