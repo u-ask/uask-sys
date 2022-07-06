@@ -1187,7 +1187,7 @@ class UserTruenorthDriver {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const account = yield getAccountByUserId(userid, this.client);
-            if (account) {
+            if (account && survey.name in account.surveys) {
                 return new User(account.surname, account.given_name, account.title, account.surveys[survey.name].role, account.email, account.phone, DomainCollection(...((_a = account.surveys[survey.name].samples) !== null && _a !== void 0 ? _a : [])), DomainCollection(...((_b = account.surveys[survey.name].participants) !== null && _b !== void 0 ? _b : [])), {
                     password: account.password,
                     id: account.id,
@@ -1207,7 +1207,7 @@ class UserTruenorthDriver {
             const account = yield manager.getByUserid(user.userid);
             const surveys = (_a = account === null || account === void 0 ? void 0 : account.surveys) !== null && _a !== void 0 ? _a : {};
             surveys[survey.name] = {
-                samples: ((_b = user.samples) !== null && _b !== void 0 ? _b : []),
+                samples: ((_b = user.sampleCodes) !== null && _b !== void 0 ? _b : []),
                 role: user.workflow,
                 participants: [...((_c = user.participantCodes) !== null && _c !== void 0 ? _c : [])],
             };
@@ -1216,7 +1216,6 @@ class UserTruenorthDriver {
                 surname: user.name,
                 given_name: user.firstName,
                 phone: user.phone,
-                samples: user.sampleCodes,
                 password: user.password,
                 id: user.id,
                 email: user.email,

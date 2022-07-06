@@ -36,7 +36,12 @@ export default [
         return "[name]-[hash].js";
       },
     },
-    external: [...external, "uask-dom/example", "uask-auth/example"],
+    external: [
+      ...external,
+      "uask-dom/example",
+      "uask-auth/example",
+      "uask-auth/client",
+    ],
     plugins,
   },
   {

@@ -687,9 +687,10 @@ class Notifier {
     }
     notifyUser(user, message) {
         var _a, _b;
-        if ((_a = user.email) === null || _a === void 0 ? void 0 : _a.includes("@"))
+        if (((_a = user.email) === null || _a === void 0 ? void 0 : _a.includes("@")) && !!process.env.SENDGRID_API_KEY)
             return this.notifyByEmail(user, message);
-        else if (/[+0-9 ]+/.test((_b = user.phone) !== null && _b !== void 0 ? _b : ""))
+        else if (/[+0-9 ]+/.test((_b = user.phone) !== null && _b !== void 0 ? _b : "") &&
+            !process.env.TWILIO_API_KEY_SECRET)
             return this.notifyBySms(user, message);
         return Promise.resolve();
     }
@@ -2073,7 +2074,13 @@ class SurveyAutzDriver {
         this.userid = userid;
     }
     getByName(name) {
-        return this.driver.getByName(name);
+        return __awaiter(this, void 0, void 0, function* () {
+            const survey = yield this.driver.getByName(name);
+            const caller = yield this.userDriver.getByUserId(survey, this.userid);
+            if (typeof caller == "undefined")
+                return Promise.reject("not authorized to read survey");
+            return survey;
+        });
     }
     save(survey) {
         return this.driver

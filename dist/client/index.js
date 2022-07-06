@@ -2,6 +2,8 @@ import { s as surveyDeserialize, _ as __awaiter, h as handleClientError, a as su
 export { A as AuditRecord, d as AuditTrail, B as Builder, D as Document, I as InterviewSaveOptions, K as KpiGenericDriver, L as LoggingProxy, H as ParticipantAuthorizationManager, P as ParticipantGetOptions, f as ParticipantSummary, S as SampleCacheDriver, c as SummaryGenericDriver, J as SurveyAuthorizationManager, U as UaskClientError, M as UaskError, j as clone, y as crossRuleDeserialize, x as crossRuleSerialize, e as errorMessage, N as generateDSL, g as getAllTags, h as handleClientError, E as interviewDeserialize, F as interviewItemDeserialize, i as interviewItemSerialize, C as interviewSerialize, r as itemDeserialize, t as itemSerialize, n as librarySerialize, l as pageDeserialize, m as pageSerialize, o as pageSetDeserialize, q as pageSetSerialize, p as participantDeserialize, z as participantSerialize, G as pick, v as ruleDeserialize, u as ruleSerialize, s as surveyDeserialize, a as surveySerialize, k as workflowDeserialize, w as workflowSerialize } from './system.js';
 import { SurveyBuilder, ParticipantBuilder, DomainCollection, getTranslation, Sample, User } from 'uask-dom';
 import 'fast-deep-equal';
+import got from 'got';
+import { Client } from 'uask-auth/client';
 import 'debug';
 import 'stealer';
 
@@ -404,4 +406,38 @@ class ClientDrivers {
     }
 }
 
-export { ClientDrivers };
+class UaskClient {
+    constructor(url) {
+        this.url = url;
+        this.surveyDriver = this.deref("surveyDriver", "getByName", "save");
+        this.sampleDriver = this.deref("sampleDriver", "getAll", "getBySampleCode", "save");
+        this.participantDriver = this.deref("participantDriver", "getAll", "getBySample", "getByParticipantCode", "save", "delete");
+        this.interviewDriver = this.deref("interviewDriver", "save", "delete");
+        this.summaryDriver = this.deref("summaryDriver", "getParticipantSummaries");
+        this.userDriver = this.deref("userDriver", "getAll", "getByUserId", "save");
+        this.auditDriver = this.deref("auditDriver", "get");
+        this.documentDriver = this.deref("documentDriver", "getAll", "getByHash", "getContent", "save", "saveContent", "delete");
+        this.kpiDriver = this.deref("kpiDriver", "getAll");
+        this.auth = new Client(`${url}/oidc`);
+        this.drivers = this.auth.getTokens().then(toks => {
+            const cli = got.extend({
+                prefixUrl: url,
+                headers: {
+                    Authorization: `Bearer ${toks.access_token}`,
+                },
+            });
+            return new ClientDrivers(cli);
+        });
+    }
+    destroy() {
+        return this.auth.destroy();
+    }
+    deref(driver, ...methods) {
+        return methods.reduce((d, m) => {
+            const impl = (...args) => this.drivers.then(d => Reflect.get(d[driver], m).call(d[driver], ...args));
+            return Object.assign(d, { [m]: impl });
+        }, {});
+    }
+}
+
+export { ClientDrivers, UaskClient };

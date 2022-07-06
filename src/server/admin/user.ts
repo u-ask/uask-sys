@@ -38,7 +38,7 @@ export class UserTruenorthDriver implements IUserDriver {
 
   async getByUserId(survey: Survey, userid: string): Promise<User | undefined> {
     const account = await getAccountByUserId(userid, this.client);
-    if (account) {
+    if (account && survey.name in account.surveys) {
       return new User(
         account.surname as string,
         account.given_name as string,

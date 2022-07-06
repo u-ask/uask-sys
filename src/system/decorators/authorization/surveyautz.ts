@@ -9,8 +9,12 @@ export class SurveyAutzDriver implements ISurveyDriver {
     private readonly userid: string
   ) {}
 
-  getByName(name: string): Promise<Survey> {
-    return this.driver.getByName(name);
+  async getByName(name: string): Promise<Survey> {
+    const survey = await this.driver.getByName(name);
+    const caller = await this.userDriver.getByUserId(survey, this.userid);
+    if (typeof caller == "undefined")
+      return Promise.reject("not authorized to read survey");
+    return survey;
   }
 
   save(survey: Survey): Promise<Partial<Survey>> {

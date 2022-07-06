@@ -17,4 +17,22 @@ declare class ClientDrivers implements IDrivers {
     constructor(client: Got);
 }
 
-export { ClientDrivers };
+declare class UaskClient implements IDrivers {
+    private readonly url;
+    private readonly auth;
+    private readonly drivers;
+    constructor(url: string);
+    surveyDriver: ISurveyDriver;
+    sampleDriver: ISampleDriver;
+    participantDriver: IParticipantDriver & IParticipantDeleteDriver;
+    interviewDriver: IInterviewDriver & IInterviewDeleteDriver;
+    summaryDriver: ISummaryDriver;
+    userDriver: IUserDriver;
+    auditDriver: IAuditDriver;
+    documentDriver: IDocumentDriver;
+    kpiDriver: IKpiDriver;
+    destroy(): Promise<void>;
+    private deref;
+}
+
+export { ClientDrivers, UaskClient };
