@@ -94,8 +94,12 @@ export class Notifier implements INotifier {
   }
 
   private notifyUser(user: IContactable, message: string): Promise<void> {
-    if (user.email?.includes("@")) return this.notifyByEmail(user, message);
-    else if (/[+0-9 ]+/.test(user.phone ?? ""))
+    if (user.email?.includes("@") && !!process.env.SENDGRID_API_KEY)
+      return this.notifyByEmail(user, message);
+    else if (
+      /[+0-9 ]+/.test(user.phone ?? "") &&
+      !process.env.TWILIO_API_KEY_SECRET
+    )
       return this.notifyBySms(user, message);
     return Promise.resolve();
   }
