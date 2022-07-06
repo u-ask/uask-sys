@@ -33,7 +33,7 @@ export const production = {
       '{"user":"postgres","host":"localhost","database":"postgres"}'
   ),
   migrations: {
-    directory: ["./db/migrations", "./libs/truenorth/migrations"],
+    directory: ["./node_modules/uask-auth/db/migrations", "./db/migrations"],
   },
   seeds: {
     directory: ["./db/seeds/preprod"],
