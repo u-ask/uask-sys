@@ -12,7 +12,7 @@ const findAccount = (ctx: unknown, id: string) =>
   manager.findOIDCAccount(ctx, id);
 const oidc = provider(DbAdapter, findAccount);
 
-export const oidcService = service(oidc, client, async (account, { code }) => {
+export const oidcService = service(oidc, manager, async (account, { code }) => {
   const notifier = new Notifier();
   await notifier.notifyAuthentCode(account, code);
 });
