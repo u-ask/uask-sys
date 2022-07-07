@@ -158,17 +158,44 @@ await client.destroy();
 
 This prints a `Participant` domain model object to the console with a `participantCode` computed server side. The `Interview` contained in the `Participant` has a `nonce` property also computed server side.
 
-## `UaskClient` class
+## Audit trail
+All modification are tracked into the audit trail. The following snippet modify the patient created above and display all journalized modifications.
+```ts
+import { UaskClient } from "uask-sys/pkce";
+import { ParticipantBuilder } from "uask-dom";
+
+const client = new UaskClient("http://127.0.0.1:3005");
+
+const survey = await client.surveyDriver.getByName("First-Survey");
+const samples = await client.sampleDriver.getAll(survey, "Sample-001");
+const participant = await client.participantDriver.getByParticipantCode(survey, samples, "000002")
+const interview = participant.interviews[0];
+
+const builder = new ParticipantBuilder(survey, participant);
+builder.interview("Questionnaire", interview.nonce)
+  .item("OK").value(false)
+  .item("WHEN").value(new Date());
+const updatedParticipant = builder.build();
+
+await client.participantDriver.save(survey, updatedParticipant);
+const records = await client.auditDriver.get(survey, {participantCode: "000002"})
+
+console.log(records);
+await client.destroy();
+```
+The second argument of `auditDriver.get(survey, {participantCode: "000002"})` may take additional information to narrow the audit target. See [`auditDriver` reference](#uaskclientauditdriver)
+
+## Client reference
 For more information on the domain object model, see [U-ASK Domain Model](https://github.com/u-ask/uask-dom#readme).
 
-**UaskClient.surveyDriver**
+#### **UaskClient.surveyDriver**
 
 | method                               | returns                    | description
 |:-------------------------------------|:---------------------------|:------------------------
 | `getByName(name: string)`            | `Promise<Survey>`          | get a survey by its name
 | `save(survey: Survey)`               | `Promise`                  | save a survey and all its components
 
-**UaskClient.sampleDriver**
+#### **UaskClient.sampleDriver**
 
 | method                                          | returns             | description
 |:------------------------------------------------|:--------------------|:------------------------
@@ -176,7 +203,7 @@ For more information on the domain object model, see [U-ASK Domain Model](https:
 | `getBySampleCode(survey: Survey, code: string)` | `Promise<Sample>`   | get a sample given its code
 | `save(survey: Survey, sample: Sample)`          | `Promise`           | save a sample for the given survey
 
-**UaskClient.participantDriver**
+#### **UaskClient.participantDriver**
 
 | method                                            | returns                   | description
 |:--------------------------------------------------|:--------------------------|:------------------------
@@ -186,9 +213,38 @@ For more information on the domain object model, see [U-ASK Domain Model](https:
 | `save(survey: Survey, participant: Participant)`     | `Promise`              | save a participant
 | `delete(survey: Survey, participant: Participant)`   | `Promise`              | delete a participant
 
-**UaskClient.interviewDriver**
+#### **UaskClient.interviewDriver**
 
 | method                                                                   | returns   | description
 |:-------------------------------------------------------------------------|:----------|:------------------------
 | `save(survey: Survey, participant: Participant, interview: Interview)`   | `Promise` | save an interview
 | `delete(survey: Survey, participant: Participant, interview: Interview)` | `Promise` | delete an interview
+
+#### **UaskClient.participantDriver**
+
+| method                                    | returns               | description
+|:------------------------------------------|:----------------------|:------------------------
+| `getAll(survey: Survey, sample?: Sample)` | `Promise<ISummary[]>` | get lightweight summaries for participants
+
+#### **UaskClient.userDriver**
+
+| method                                        | returns           | description
+|:----------------------------------------------|:------------------|:------------------------
+| `getAll(survey: Survey)`                      | `Promise<User[]>` | get all users for given survey
+| `getByUserId(survey: Survey, userid: string)` | `Promise<User>`   | get a user given its userid
+| `save(survey: Survey, user: User)`            | `Promise`         | save a user for the given survey
+
+#### **UaskClient.auditDriver**
+
+| method                                   | returns                  | description
+|:-----------------------------------------|:-------------------------|:------------------------
+| `get(survey: Survey, ref: AuditableRef)` | `Promise<AuditRecord[]>` | get audit records
+
+#### **AuditableRef**
+
+| property        | description
+|:----------------|:------------------------
+| `patientCode`   | participant code
+| `nonce?`        | interview nonce
+| `variableName?` | item variable name
+| `intance?`      | instance
