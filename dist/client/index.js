@@ -202,7 +202,7 @@ class SummaryWebDriver {
     constructor(client) {
         this.client = client;
     }
-    getParticipantSummaries(survey, sample, x, options) {
+    getAll(survey, sample, x, options) {
         const select = Array.isArray(x)
             ? x
             : [
@@ -413,7 +413,7 @@ class UaskClient {
         this.sampleDriver = this.deref("sampleDriver", "getAll", "getBySampleCode", "save");
         this.participantDriver = this.deref("participantDriver", "getAll", "getBySample", "getByParticipantCode", "save", "delete");
         this.interviewDriver = this.deref("interviewDriver", "save", "delete");
-        this.summaryDriver = this.deref("summaryDriver", "getParticipantSummaries");
+        this.summaryDriver = this.deref("summaryDriver", "getAll");
         this.userDriver = this.deref("userDriver", "getAll", "getByUserId", "save");
         this.auditDriver = this.deref("auditDriver", "get");
         this.documentDriver = this.deref("documentDriver", "getAll", "getByHash", "getContent", "save", "saveContent", "delete");

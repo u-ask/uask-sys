@@ -79,7 +79,7 @@ function summary(g: QueryFieldBuilder, driverFactory: DriverFactory) {
         ...(a.offset ? { offset: a.offset } : {}),
         ...(a.limit ? { limit: a.limit } : {}),
       };
-      const result = await drivers.summaryDriver.getParticipantSummaries(
+      const result = await drivers.summaryDriver.getAll(
         survey,
         sample,
         select,

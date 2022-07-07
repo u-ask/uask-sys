@@ -6,7 +6,7 @@ export async function testSummaryParticipantAlerts(
   t: Test
 ): Promise<void> {
   const survey = await drivers.surveyDriver.getByName("P11-05");
-  const participantSummary = await drivers.summaryDriver.getParticipantSummaries(
+  const participantSummary = await drivers.summaryDriver.getAll(
     survey,
     undefined,
     ["alerts"]
@@ -19,7 +19,7 @@ export async function testSummaryParticipantPins(
   t: Test
 ): Promise<void> {
   const survey = await drivers.surveyDriver.getByName("P11-05");
-  const participantSummary = await drivers.summaryDriver.getParticipantSummaries(
+  const participantSummary = await drivers.summaryDriver.getAll(
     survey,
     undefined,
     ["participantCode", "currentInterview", "pins"]
@@ -32,7 +32,7 @@ export async function testSummaryParticipantKpis(
   t: Test
 ): Promise<void> {
   const survey = await drivers.surveyDriver.getByName("P11-05");
-  const participantSummary = await drivers.summaryDriver.getParticipantSummaries(
+  const participantSummary = await drivers.summaryDriver.getAll(
     survey,
     undefined,
     ["participantCode", "currentInterview", "kpis"]
@@ -45,7 +45,7 @@ export async function testSummaryParticipantInfo(
   t: Test
 ): Promise<void> {
   const survey = await drivers.surveyDriver.getByName("P11-05");
-  const participantSummary = await drivers.summaryDriver.getParticipantSummaries(
+  const participantSummary = await drivers.summaryDriver.getAll(
     survey,
     undefined,
     ["participantCode", "sampleCode", "currentInterview"]
@@ -55,7 +55,7 @@ export async function testSummaryParticipantInfo(
   t.true(participantSummary[0].currentInterview?.date instanceof Date);
   t.equal(participantSummary[10].participantCode, "000011");
   t.equal(participantSummary[10].sampleCode, "002");
-  const participantSampleSummary = await drivers.summaryDriver.getParticipantSummaries(
+  const participantSampleSummary = await drivers.summaryDriver.getAll(
     survey,
     await drivers.sampleDriver.getBySampleCode(survey, "001"),
     ["participantCode", "sampleCode"]

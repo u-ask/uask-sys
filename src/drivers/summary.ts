@@ -184,12 +184,12 @@ export class ParticipantSummary implements IParticipantSummary {
 }
 
 export interface ISummaryDriver {
-  getParticipantSummaries(
+  getAll(
     survey: Survey,
     sample?: Sample,
     options?: Partial<ParticipantGetOptions>
   ): Promise<ParticipantSummary[]>;
-  getParticipantSummaries(
+  getAll(
     survey: Survey,
     sample?: Sample,
     select?: (keyof ParticipantSummary)[],
@@ -203,18 +203,18 @@ export class SummaryGenericDriver implements ISummaryDriver {
     private readonly sampleDriver: ISampleDriver
   ) {}
 
-  getParticipantSummaries(
+  getAll(
     survey: Survey,
     sample?: Sample,
     options?: Partial<ParticipantGetOptions>
   ): Promise<ParticipantSummary[]>;
-  getParticipantSummaries(
+  getAll(
     survey: Survey,
     sample?: Sample,
     select?: (keyof ParticipantSummary)[],
     options?: Partial<ParticipantGetOptions>
   ): Promise<Partial<ParticipantSummary>[]>;
-  async getParticipantSummaries(
+  async getAll(
     survey: Survey,
     sample?: Sample,
     x?: (keyof ParticipantSummary)[] | Partial<ParticipantGetOptions>,

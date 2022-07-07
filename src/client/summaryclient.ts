@@ -10,18 +10,18 @@ import { handleClientError } from "../system/client.js";
 export class SummaryWebDriver implements ISummaryDriver {
   constructor(private client: Got) {}
 
-  getParticipantSummaries(
+  getAll(
     survey: Survey,
     sample?: Sample,
     options?: ParticipantGetOptions
   ): Promise<ParticipantSummary[]>;
-  getParticipantSummaries(
+  getAll(
     survey: Survey,
     sample?: Sample,
     select?: (keyof ParticipantSummary)[],
     options?: ParticipantGetOptions
   ): Promise<Partial<ParticipantSummary>[]>;
-  getParticipantSummaries(
+  getAll(
     survey: Survey,
     sample?: Sample,
     x?: (keyof ParticipantSummary)[] | ParticipantGetOptions,

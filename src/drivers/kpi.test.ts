@@ -35,7 +35,7 @@ test("KPI drivers : get unknown conditional #319", async t => {
   seedExample();
   const drivers = new ExampleDrivers();
   const survey = await drivers.surveyDriver.getByName("P11-05");
-  const summaries = await drivers.summaryDriver.getParticipantSummaries(
+  const summaries = await drivers.summaryDriver.getAll(
     survey,
     undefined,
     ["kpis"]

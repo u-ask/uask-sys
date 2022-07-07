@@ -96,7 +96,7 @@ test("Summary DB driver select list", async (store, t) => {
   await seed(store);
   const drivers = buildDrivers(store);
   const survey = await drivers.surveyDriver.getByName("P11-05");
-  const summaries = await drivers.summaryDriver.getParticipantSummaries(
+  const summaries = await drivers.summaryDriver.getAll(
     survey,
     undefined,
     [

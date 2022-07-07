@@ -63,15 +63,15 @@ declare class ParticipantSummary implements IParticipantSummary {
     private itemSummary;
 }
 interface ISummaryDriver {
-    getParticipantSummaries(survey: Survey$1, sample?: Sample, options?: Partial<ParticipantGetOptions>): Promise<ParticipantSummary[]>;
-    getParticipantSummaries(survey: Survey$1, sample?: Sample, select?: (keyof ParticipantSummary)[], options?: Partial<ParticipantGetOptions>): Promise<Partial<ParticipantSummary>[]>;
+    getAll(survey: Survey$1, sample?: Sample, options?: Partial<ParticipantGetOptions>): Promise<ParticipantSummary[]>;
+    getAll(survey: Survey$1, sample?: Sample, select?: (keyof ParticipantSummary)[], options?: Partial<ParticipantGetOptions>): Promise<Partial<ParticipantSummary>[]>;
 }
 declare class SummaryGenericDriver implements ISummaryDriver {
     private readonly participantDriver;
     private readonly sampleDriver;
     constructor(participantDriver: IParticipantDriver, sampleDriver: ISampleDriver);
-    getParticipantSummaries(survey: Survey$1, sample?: Sample, options?: Partial<ParticipantGetOptions>): Promise<ParticipantSummary[]>;
-    getParticipantSummaries(survey: Survey$1, sample?: Sample, select?: (keyof ParticipantSummary)[], options?: Partial<ParticipantGetOptions>): Promise<Partial<ParticipantSummary>[]>;
+    getAll(survey: Survey$1, sample?: Sample, options?: Partial<ParticipantGetOptions>): Promise<ParticipantSummary[]>;
+    getAll(survey: Survey$1, sample?: Sample, select?: (keyof ParticipantSummary)[], options?: Partial<ParticipantGetOptions>): Promise<Partial<ParticipantSummary>[]>;
     private getParticipants;
 }
 

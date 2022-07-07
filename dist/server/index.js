@@ -602,7 +602,7 @@ function summary(g, driverFactory) {
                 ? yield drivers.sampleDriver.getBySampleCode(survey, a.sample)
                 : undefined;
             const options = Object.assign(Object.assign({}, (a.offset ? { offset: a.offset } : {})), (a.limit ? { limit: a.limit } : {}));
-            const result = yield drivers.summaryDriver.getParticipantSummaries(survey, sample, select, options);
+            const result = yield drivers.summaryDriver.getAll(survey, sample, select, options);
             dlog$2("Graphql summary", "end");
             return result;
         }), ctx);
@@ -2194,14 +2194,14 @@ class SummaryAutzDriver {
         this.uderDriver = uderDriver;
         this.userId = userId;
     }
-    getParticipantSummaries(survey, sample, x, y) {
+    getAll(survey, sample, x, y) {
         return __awaiter(this, void 0, void 0, function* () {
             const am = yield this.getAutz(survey);
             if (sample && !am.canReadSample(sample.sampleCode))
                 return Promise.reject(am.canReadSampleError(sample.sampleCode));
             const select = Array.isArray(x) ? x : [];
             const options = Array.isArray(x) ? y : x;
-            const summaries = yield this.driver.getParticipantSummaries(survey, sample, select.length > 0 ? [...select, "sampleCode"] : [], options);
+            const summaries = yield this.driver.getAll(survey, sample, select.length > 0 ? [...select, "sampleCode"] : [], options);
             return summaries
                 .filter(s => am.canReadSample(s.sampleCode))
                 .map(s => this.restoreSelect(s, select));

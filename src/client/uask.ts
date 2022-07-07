@@ -40,7 +40,7 @@ export class UaskClient implements IDrivers {
 
   interviewDriver = this.deref("interviewDriver", "save", "delete");
 
-  summaryDriver = this.deref("summaryDriver", "getParticipantSummaries");
+  summaryDriver = this.deref("summaryDriver", "getAll");
 
   userDriver = this.deref("userDriver", "getAll", "getByUserId", "save");
 

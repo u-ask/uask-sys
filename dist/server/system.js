@@ -1737,7 +1737,7 @@ class KpiGenericDriver {
         return Promise.all(samples.map(s => this.getSummaries(survey, s))).then(summaries => Array.prototype.concat([], ...summaries));
     }
     getSummaries(survey, sample) {
-        return this.summaryDriver.getParticipantSummaries(survey, sample, [
+        return this.summaryDriver.getAll(survey, sample, [
             "participantCode",
             "sampleCode",
             "currentInterview",
@@ -1793,7 +1793,7 @@ class SummaryDbDriver {
     constructor(client) {
         this.client = client;
     }
-    getParticipantSummaries(survey, sample, x, options) {
+    getAll(survey, sample, x, options) {
         return __awaiter(this, void 0, void 0, function* () {
             const select = Array.isArray(x) ? x : [];
             options = Array.isArray(x) ? options : x;

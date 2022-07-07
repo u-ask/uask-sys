@@ -16,18 +16,18 @@ declare module "./ParticipantSummary" {
 export class SummaryDbDriver implements ISummaryDriver {
   constructor(private readonly client: Knex) {}
 
-  getParticipantSummaries(
+  getAll(
     survey: Survey,
     sample?: Sample,
     options?: ParticipantGetOptions
   ): Promise<ParticipantSummary[]>;
-  getParticipantSummaries(
+  getAll(
     survey: Survey,
     sample?: Sample,
     select?: (keyof ParticipantSummary)[],
     options?: ParticipantGetOptions
   ): Promise<Partial<ParticipantSummary>[]>;
-  async getParticipantSummaries(
+  async getAll(
     survey: Survey,
     sample?: Sample,
     x?: (keyof ParticipantSummary)[] | ParticipantGetOptions,

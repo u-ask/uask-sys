@@ -119,7 +119,7 @@ export class KpiGenericDriver implements IKpiDriver {
   }
 
   private getSummaries(survey: Survey, sample?: Sample) {
-    return this.summaryDriver.getParticipantSummaries(survey, sample, [
+    return this.summaryDriver.getAll(survey, sample, [
       "participantCode",
       "sampleCode",
       "currentInterview",

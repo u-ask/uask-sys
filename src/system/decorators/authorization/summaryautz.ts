@@ -16,18 +16,18 @@ export class SummaryAutzDriver implements ISummaryDriver {
     readonly userId: string
   ) {}
 
-  getParticipantSummaries(
+  getAll(
     survey: Survey,
     sample?: Sample,
     options?: Partial<ParticipantGetOptions>
   ): Promise<ParticipantSummary[]>;
-  getParticipantSummaries(
+  getAll(
     survey: Survey,
     sample?: Sample,
     select?: (keyof ParticipantSummary)[],
     options?: Partial<ParticipantGetOptions>
   ): Promise<Partial<ParticipantSummary>[]>;
-  async getParticipantSummaries(
+  async getAll(
     survey: Survey,
     sample?: Sample,
     x?: (keyof ParticipantSummary)[] | Partial<ParticipantGetOptions>,
@@ -38,7 +38,7 @@ export class SummaryAutzDriver implements ISummaryDriver {
       return Promise.reject(am.canReadSampleError(sample.sampleCode));
     const select = Array.isArray(x) ? x : [];
     const options = Array.isArray(x) ? y : x;
-    const summaries = await this.driver.getParticipantSummaries(
+    const summaries = await this.driver.getAll(
       survey,
       sample,
       select.length > 0 ? [...select, "sampleCode"] : [],

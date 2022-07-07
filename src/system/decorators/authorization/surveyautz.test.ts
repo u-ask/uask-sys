@@ -59,6 +59,6 @@ test("Creating survey also creates a developer", async t => {
   t.true(saveSurvey.called);
   t.true(saveUser.called);
   t.equal(saveUser.getCall(0).args[1].userid, "writer_s001");
-  t.equal(saveUser.getCall(0).args[1].role, "developer");
+  t.equal(saveUser.getCall(0).args[1].role, "superadministrator");
   t.end();
 });

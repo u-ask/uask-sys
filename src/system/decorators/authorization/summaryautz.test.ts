@@ -9,7 +9,7 @@ test("Writer can read summaries from sample", async t => {
     "writer_s001"
   );
   await autzDriver
-    .getParticipantSummaries(survey, samples[0])
+    .getAll(survey, samples[0])
     .then(() => t.pass())
     .catch(e => t.fail(e));
   t.true(summariesGet.called);
@@ -37,7 +37,7 @@ test("Writer cannot read summaries from sample", async t => {
     "writer_s001"
   );
   await autzDriver
-    .getParticipantSummaries(survey, samples[1])
+    .getAll(survey, samples[1])
     .then(() => t.fail())
     .catch(e => t.equal(e, "not authorized to read participants from sample"));
   t.false(summariesGet.called);
@@ -62,7 +62,7 @@ test("Writer cannot read kpis from sample", async t => {
 
 test("Writer reads filtered summaries", async t => {
   const { autzDriver, survey } = await setupTest("writer_s001");
-  const participants = await autzDriver.getParticipantSummaries(
+  const participants = await autzDriver.getAll(
     survey,
     undefined,
     ["participantCode"]
@@ -74,7 +74,7 @@ test("Writer reads filtered summaries", async t => {
 
 test("Administrator reads all summaries", async t => {
   const { autzDriver, survey } = await setupTest("administrator");
-  const participants = await autzDriver.getParticipantSummaries(
+  const participants = await autzDriver.getAll(
     survey,
     undefined
   );
@@ -100,6 +100,6 @@ async function setupTest(userId: string) {
 
 function setupStub(drivers: ExampleDrivers) {
   return {
-    summariesGet: sinon.spy(drivers.summaryDriver, "getParticipantSummaries"),
+    summariesGet: sinon.spy(drivers.summaryDriver, "getAll"),
   };
 }
