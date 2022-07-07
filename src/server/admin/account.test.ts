@@ -4,7 +4,7 @@ import {
   saveAccount,
   getAccountByUserId,
 } from "./account.js";
-import { Account } from "uask-auth";
+import { Account } from "uask-auth/server";
 import { seed } from "./test-utils.js";
 
 test("GET all users", async (store, t) => {

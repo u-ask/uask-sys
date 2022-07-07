@@ -1,4 +1,4 @@
-import { Account, AccountManager } from "uask-auth";
+import { Account, AccountManager } from "uask-auth/server";
 import { Knex } from "knex";
 
 function getAllAccountsForSurvey(

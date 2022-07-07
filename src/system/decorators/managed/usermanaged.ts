@@ -1,6 +1,6 @@
 import { Knex } from "knex";
 import { Survey, User } from "uask-dom";
-import { Account } from "uask-auth";
+import { Account } from "uask-auth/server";
 import { IUserDriver } from "../../../drivers/index.js";
 import { getAccountByUserId } from "../../../server/admin/index.js";
 

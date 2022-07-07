@@ -1,5 +1,5 @@
 import got from "got";
-import { Client } from "uask-auth/client";
+import { Client } from "uask-auth";
 import { IDrivers } from "../drivers/index.js";
 import { ClientDrivers } from "./driver.js";
 

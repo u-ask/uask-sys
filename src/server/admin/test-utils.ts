@@ -1,4 +1,4 @@
-import { Account, AccountManager } from "uask-auth";
+import { Account, AccountManager } from "uask-auth/server";
 import { exampleAccounts } from "uask-auth/example";
 import { UserTruenorthDriver } from "./user.js";
 import {

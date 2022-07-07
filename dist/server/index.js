@@ -1,5 +1,5 @@
 import restana from 'restana';
-import { _ as __awaiter, I as InterviewSaveOptions, i as interviewItemDeserialize, p as participantSerialize, s as surveySerialize, a as surveyDeserialize, P as ParticipantSummary, c as config, b as __rest, D as Document, d as adminRouter, e as errorMessage, f as isManaged, g as assertNoSubset, S as Store, B as Builder, h as SampleStoreDriver, j as SampleCacheDriver, U as UserTruenorthDriver, k as UserManagedDriver, l as SurveyStoreDriver, m as SurveyReconciliationDriver, n as SurveyCacheDriver, o as ParticipantStoreDriver, q as ParticipantReconciliationDriver, r as ParticipantMixinDriver, t as ParticipantCacheDriver, u as ParticipantAuditDriver, v as ParticipantSummaryDriver, w as InterviewStoreDriver, x as InterviewAuditDriver, y as InterviewManagedDriver, z as InterviewMixinDriver, A as InterviewRuleDriver, C as SummaryDbDriver, E as AuditDbDriver, K as KpiGenericDriver } from './system.js';
+import { _ as __awaiter, I as InterviewSaveOptions, i as interviewItemDeserialize, p as participantSerialize, s as surveySerialize, a as surveyDeserialize, P as ParticipantSummary, c as config, b as provider, d as service, A as AccountManager, e as __rest, D as Document, f as adminRouter, g as errorMessage, h as isManaged, j as assertNoSubset, S as Store, B as Builder, k as SampleStoreDriver, l as SampleCacheDriver, U as UserTruenorthDriver, m as UserManagedDriver, n as SurveyStoreDriver, o as SurveyReconciliationDriver, q as SurveyCacheDriver, r as ParticipantStoreDriver, t as ParticipantReconciliationDriver, u as ParticipantMixinDriver, v as ParticipantCacheDriver, w as ParticipantAuditDriver, x as ParticipantSummaryDriver, y as InterviewStoreDriver, z as InterviewAuditDriver, C as InterviewManagedDriver, E as InterviewMixinDriver, F as InterviewRuleDriver, G as SummaryDbDriver, H as AuditDbDriver, K as KpiGenericDriver } from './system.js';
 import Knex from 'knex';
 import { graphqlHTTP } from 'express-graphql';
 import helmet from 'helmet';
@@ -10,7 +10,6 @@ import { Readable } from 'stream';
 import debug from 'debug';
 import SchemaBuilder from '@pothos/core';
 import 'fast-deep-equal';
-import { AccountManager, provider, service } from 'uask-auth';
 import fnv from '@sindresorhus/fnv1a';
 import { knexAdapter } from 'oidc-provider-knex-adapter';
 import sgMail from '@sendgrid/mail';
@@ -25,6 +24,11 @@ import ejs from 'ejs';
 import { fork } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import 'fs';
+import 'os';
+import 'oidc-provider';
+import 'assert';
+import 'uuid-random';
 
 function addAuditProps(adaptee, survey, driver) {
     const creatorMap = new Map();

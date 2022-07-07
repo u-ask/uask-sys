@@ -2,7 +2,7 @@ import { _ as __awaiter, O as isInterviewItemTarget, Q as isInterviewTarget, A a
 import { User, DomainCollection, Sample, ParticipantBuilder, SurveyBuilder, Participant, Interview } from 'uask-dom';
 import 'fast-deep-equal';
 import 'got';
-import 'uask-auth/client';
+import 'uask-auth';
 import { exampleParticipants, exampleSamples, exampleSurvey } from 'uask-dom/example';
 import { exampleAccounts } from 'uask-auth/example';
 import { Mutex } from 'await-semaphore';

@@ -1,7 +1,7 @@
 import Knex from "knex";
 import { config } from "../knexclient.js";
-import { AccountManager, service } from "uask-auth";
-import { provider } from "uask-auth";
+import { AccountManager, service } from "uask-auth/server";
+import { provider } from "uask-auth/server";
 import { knexAdapter } from "oidc-provider-knex-adapter";
 import { Notifier } from "./utils/notifier.js";
 

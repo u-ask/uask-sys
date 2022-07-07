@@ -3,7 +3,7 @@ export { A as AuditRecord, d as AuditTrail, B as Builder, D as Document, I as In
 import { SurveyBuilder, ParticipantBuilder, DomainCollection, getTranslation, Sample, User } from 'uask-dom';
 import 'fast-deep-equal';
 import got from 'got';
-import { Client } from 'uask-auth/client';
+import { Client } from 'uask-auth';
 import 'debug';
 import 'stealer';
 

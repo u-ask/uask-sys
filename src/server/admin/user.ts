@@ -1,6 +1,6 @@
 import { Knex } from "knex";
 import { DomainCollection, Survey, User } from "uask-dom";
-import { Account, AccountManager } from "uask-auth";
+import { Account, AccountManager } from "uask-auth/server";
 import { IUserDriver } from "../../drivers/index.js";
 import {
   getAllAccountsForSurvey,
