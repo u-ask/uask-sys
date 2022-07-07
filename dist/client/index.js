@@ -407,8 +407,8 @@ class ClientDrivers {
 }
 
 class UaskClient {
-    constructor(url) {
-        this.url = url;
+    constructor(apiUrl, authUrl = `${apiUrl}/oidc`) {
+        this.apiUrl = apiUrl;
         this.surveyDriver = this.deref("surveyDriver", "getByName", "save");
         this.sampleDriver = this.deref("sampleDriver", "getAll", "getBySampleCode", "save");
         this.participantDriver = this.deref("participantDriver", "getAll", "getBySample", "getByParticipantCode", "save", "delete");
@@ -418,10 +418,10 @@ class UaskClient {
         this.auditDriver = this.deref("auditDriver", "get");
         this.documentDriver = this.deref("documentDriver", "getAll", "getByHash", "getContent", "save", "saveContent", "delete");
         this.kpiDriver = this.deref("kpiDriver", "getAll");
-        this.auth = new Client(`${url}/oidc`);
+        this.auth = new Client(authUrl);
         this.drivers = this.auth.getTokens().then(toks => {
             const cli = got.extend({
-                prefixUrl: url,
+                prefixUrl: apiUrl,
                 headers: {
                     Authorization: `Bearer ${toks.access_token}`,
                 },
@@ -430,7 +430,7 @@ class UaskClient {
         });
     }
     destroy() {
-        return this.auth.destroy();
+        return this.drivers.then(() => this.auth.destroy());
     }
     deref(driver, ...methods) {
         return methods.reduce((d, m) => {

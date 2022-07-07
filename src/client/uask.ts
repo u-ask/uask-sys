@@ -7,11 +7,11 @@ export class UaskClient implements IDrivers {
   private readonly auth: Client;
   private readonly drivers: Promise<ClientDrivers>;
 
-  constructor(private readonly url: string) {
-    this.auth = new Client(`${url}/oidc`);
+  constructor(private readonly apiUrl: string, authUrl = `${apiUrl}/oidc`) {
+    this.auth = new Client(authUrl);
     this.drivers = this.auth.getTokens().then(toks => {
       const cli = got.extend({
-        prefixUrl: url,
+        prefixUrl: apiUrl,
         headers: {
           Authorization: `Bearer ${toks.access_token}`,
         },
@@ -59,7 +59,7 @@ export class UaskClient implements IDrivers {
   kpiDriver = this.deref("kpiDriver", "getAll");
 
   destroy() {
-    return this.auth.destroy();
+    return this.drivers.then(() => this.auth.destroy());
   }
 
   private deref<T extends keyof IDrivers>(

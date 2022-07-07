@@ -714,8 +714,8 @@ class Notifier {
             sgMail.setApiKey(process.env.SENDGRID_API_KEY);
             const msg = {
                 to: user.email,
-                from: "maintenance@arone.com",
-                subject: "Arone EDC",
+                from: process.env.SENDGRID_SENDER,
+                subject: "U-ASK notification",
                 text: message,
             };
             yield sgMail.send(msg);
@@ -2103,7 +2103,7 @@ class SurveyAutzDriver {
     create(survey) {
         return __awaiter(this, void 0, void 0, function* () {
             const s = yield this.driver.save(survey);
-            yield this.userDriver.save(survey, new User("developer").update({ userid: this.userid }));
+            yield this.userDriver.save(survey, new User("superadministrator").update({ userid: this.userid }));
             return s;
         });
     }

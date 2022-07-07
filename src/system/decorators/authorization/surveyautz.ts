@@ -40,7 +40,7 @@ export class SurveyAutzDriver implements ISurveyDriver {
     const s = await this.driver.save(survey);
     await this.userDriver.save(
       survey,
-      new User("developer").update({ userid: this.userid })
+      new User("superadministrator").update({ userid: this.userid })
     );
     return s;
   }

@@ -18,10 +18,10 @@ declare class ClientDrivers implements IDrivers {
 }
 
 declare class UaskClient implements IDrivers {
-    private readonly url;
+    private readonly apiUrl;
     private readonly auth;
     private readonly drivers;
-    constructor(url: string);
+    constructor(apiUrl: string, authUrl?: string);
     surveyDriver: ISurveyDriver;
     sampleDriver: ISampleDriver;
     participantDriver: IParticipantDriver & IParticipantDeleteDriver;

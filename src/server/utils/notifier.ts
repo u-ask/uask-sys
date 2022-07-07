@@ -127,8 +127,8 @@ export class Notifier implements INotifier {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
     const msg = {
       to: user.email,
-      from: "maintenance@arone.com",
-      subject: "Arone EDC",
+      from: process.env.SENDGRID_SENDER as string,
+      subject: "U-ASK notification",
       text: message,
     };
     await sgMail.send(msg);
