@@ -1,7 +1,7 @@
 import sinon from "sinon";
 import { Interview } from "uask-dom";
 import test from "tape";
-import { ExampleDrivers, seedExample } from "../../../client-example.js";
+import { ExampleDrivers, seedExample } from "../../../example.js";
 import { PartialInterview } from "../../../drivers/interview.js";
 import { InterviewAutzDriver } from "./interviewautz.js";
 

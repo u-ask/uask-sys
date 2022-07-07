@@ -1,3 +1,4 @@
+import { Got } from 'got';
 import { Survey as Survey$1, Sample, Participant as Participant$1, ZippedInterview, Interview as Interview$1, IDomainCollection, InterviewItem as InterviewItem$1, mlstring, IParticipantSummary, ItemJson, Workflow as Workflow$1, User, PageItem as PageItem$1, IKPI, KPISet, ISurveyBuilder, DNode, SurveyBuilder, SurveyOptions, Page as Page$1, Library, PageSet as PageSet$1, IPageBuilder, Rule, IPageItemBuilder, CrossItemRule, ParticipantBuilder, InterviewBuilder } from 'uask-dom';
 
 declare class ParticipantGetOptions {
@@ -171,6 +172,20 @@ interface IDrivers {
     readonly auditDriver: IAuditDriver;
     readonly documentDriver: IDocumentDriver;
     readonly kpiDriver: IKpiDriver;
+}
+
+declare class ClientDrivers implements IDrivers {
+    readonly client: Got;
+    readonly sampleDriver: ISampleDriver;
+    readonly participantDriver: IParticipantDriver & IParticipantDeleteDriver;
+    readonly surveyDriver: ISurveyDriver;
+    readonly interviewDriver: IInterviewDriver & IInterviewDeleteDriver;
+    readonly summaryDriver: ISummaryDriver;
+    readonly auditDriver: IAuditDriver;
+    readonly userDriver: IUserDriver;
+    readonly documentDriver: IDocumentDriver;
+    readonly kpiDriver: IKpiDriver;
+    constructor(client: Got);
 }
 
 interface Changes<T> {
@@ -379,4 +394,4 @@ declare function handleClientError(error: WithRespBody): Promise<never>;
 
 declare function generateDSL(survey: Survey$1): string;
 
-export { ParticipantAuthorizationManager as $, AuditRecord as A, pageSetDeserialize as B, pageSetSerialize as C, Document as D, itemDeserialize as E, itemSerialize as F, ruleSerialize as G, ruleDeserialize as H, IDrivers as I, Json as J, KpiGenericDriver as K, crossRuleSerialize as L, crossRuleDeserialize as M, participantSerialize as N, participantDeserialize as O, ParticipantGetOptions as P, interviewSerialize as Q, interviewDeserialize as R, SummaryGenericDriver as S, interviewItemSerialize as T, UaskClientError as U, Value as V, interviewItemDeserialize as W, pick as X, Builder as Y, LoggingProxy as Z, SampleCacheDriver as _, ISampleDriver as a, SurveyAuthorizationManager as a0, UaskError as a1, handleClientError as a2, generateDSL as a3, IParticipantDriver as b, IParticipantDeleteDriver as c, ISurveyDriver as d, IInterviewDriver as e, IInterviewDeleteDriver as f, ISummaryDriver as g, IAuditDriver as h, IUserDriver as i, IDocumentDriver as j, IKpiDriver as k, errorMessage as l, InterviewSaveOptions as m, PartialInterview as n, AuditableRef as o, AuditTrail as p, ParticipantSummary as q, getAllTags as r, surveyDeserialize as s, surveySerialize as t, clone as u, workflowDeserialize as v, workflowSerialize as w, pageDeserialize as x, pageSerialize as y, librarySerialize as z };
+export { SurveyAuthorizationManager as $, AuditRecord as A, pageSetSerialize as B, ClientDrivers as C, Document as D, itemDeserialize as E, itemSerialize as F, ruleSerialize as G, ruleDeserialize as H, ISurveyDriver as I, Json as J, KpiGenericDriver as K, crossRuleSerialize as L, crossRuleDeserialize as M, participantSerialize as N, participantDeserialize as O, ParticipantGetOptions as P, interviewSerialize as Q, interviewDeserialize as R, SummaryGenericDriver as S, interviewItemSerialize as T, interviewItemDeserialize as U, Value as V, pick as W, Builder as X, LoggingProxy as Y, SampleCacheDriver as Z, ParticipantAuthorizationManager as _, ISampleDriver as a, UaskError as a0, errorMessage as a1, UaskClientError as a2, handleClientError as a3, generateDSL as a4, IParticipantDriver as b, IParticipantDeleteDriver as c, IInterviewDriver as d, IInterviewDeleteDriver as e, InterviewSaveOptions as f, PartialInterview as g, ISummaryDriver as h, IUserDriver as i, IAuditDriver as j, AuditableRef as k, AuditTrail as l, IDocumentDriver as m, IKpiDriver as n, IDrivers as o, ParticipantSummary as p, getAllTags as q, surveySerialize as r, surveyDeserialize as s, clone as t, workflowDeserialize as u, pageDeserialize as v, workflowSerialize as w, pageSerialize as x, librarySerialize as y, pageSetDeserialize as z };

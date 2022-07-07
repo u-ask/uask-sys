@@ -6,7 +6,7 @@ import {
   SurveyBuilder,
 } from "uask-dom";
 import test from "tape";
-import { P11_05 } from "../../client-example.js";
+import { P11_05 } from "../../example.js";
 import { surveyDeserialize, surveySerialize } from "../json/index.js";
 import {
   dslHelpers,

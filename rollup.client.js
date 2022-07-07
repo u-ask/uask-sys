@@ -22,17 +22,22 @@ const plugins = [
 export default [
   {
     input: {
-      index: "./src/client-index.ts",
-      example: "./src/client-example.ts",
+      index: "./src/client.ts",
+      pkce: "./src/client-pkce.ts",
+      example: "./src/example.ts",
     },
     output: {
       dir: "./dist/client",
       format: "es",
       manualChunks: {
-        system: ["./src/drivers/index.ts", "./src/system/client.ts"],
+        client: [
+          "./src/client/driver.ts",
+          "./src/drivers/index.ts",
+          "./src/system/client.ts",
+        ],
       },
       chunkFileNames: info => {
-        if (info.name == "system") return "system.js";
+        if (info.name == "client") return "client.js";
         return "[name]-[hash].js";
       },
     },
@@ -46,20 +51,22 @@ export default [
   },
   {
     input: {
-      index: "./out/src/client-index.d.ts",
-      example: "./out/src/client-example.d.ts",
+      index: "./out/src/client.d.ts",
+      pkce: "./out/src/client-pkce.d.ts",
+      example: "./out/src/example.d.ts",
     },
     output: {
       dir: "./dist/client",
       format: "es",
       manualChunks: {
-        system: [
+        client: [
+          "./out/src/client/driver.d.ts",
           "./out/src/drivers/index.d.ts",
           "./out/src/system/client.d.ts",
         ],
       },
       chunkFileNames: info => {
-        if (info.name == "system") return "system.d.ts";
+        if (info.name == "client") return "client.d.ts";
         return "[name]-[hash].d.ts";
       },
     },

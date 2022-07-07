@@ -1,6 +1,6 @@
 import { SurveyTableSet } from "uask-dom";
 import test from "tape";
-import { ExampleDrivers, P11_05, P11_05_Participants } from "../../client-example.js";
+import { ExampleDrivers, P11_05, P11_05_Participants } from "../../example.js";
 import { addAuditProps } from "./dataset.js";
 
 test("Add creator to dataset tables #329", async t => {

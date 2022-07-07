@@ -1,7 +1,8 @@
 import * as uask_dom from 'uask-dom';
 import { Survey, Participant, Interview, Sample, User } from 'uask-dom';
-import { e as IInterviewDriver, f as IInterviewDeleteDriver, n as PartialInterview, b as IParticipantDriver, c as IParticipantDeleteDriver, P as ParticipantGetOptions, a as ISampleDriver, d as ISurveyDriver, S as SummaryGenericDriver, g as ISummaryDriver, j as IDocumentDriver, D as Document, I as IDrivers, i as IUserDriver, h as IAuditDriver, k as IKpiDriver } from './system.js';
+import { d as IInterviewDriver, e as IInterviewDeleteDriver, g as PartialInterview, b as IParticipantDriver, c as IParticipantDeleteDriver, P as ParticipantGetOptions, a as ISampleDriver, I as ISurveyDriver, S as SummaryGenericDriver, h as ISummaryDriver, m as IDocumentDriver, D as Document, o as IDrivers, i as IUserDriver, j as IAuditDriver, n as IKpiDriver } from './client.js';
 import { exampleSurvey, exampleSamples, exampleParticipants } from 'uask-dom/example';
+import 'got';
 
 declare class InterviewExampleDriver implements IInterviewDriver, IInterviewDeleteDriver {
     private participantDriver;

@@ -4,7 +4,7 @@ import {
   P11_05,
   P11_05_Participants,
   P11_05_Samples,
-} from "../../../client-example.js";
+} from "../../../example.js";
 import { Document } from "../../../drivers/index.js";
 import {
   ParticipantAuthorizationManager,

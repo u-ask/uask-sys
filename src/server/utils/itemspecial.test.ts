@@ -6,7 +6,7 @@ import {
   ItemTypes,
 } from "uask-dom";
 import test from "tape";
-import { ExampleDrivers } from "../../client-example.js";
+import { ExampleDrivers } from "../../example.js";
 import { special, blank, reword, WrappedType } from "./itemspecial.js";
 import { print } from "./print.js";
 

@@ -71,7 +71,7 @@ The survey is built using [U-SAK Domain Model](https://github.com/u-ask/uask-dom
 ```js
 // start.js
 
-import { UaskClient } from "uask-sys/client";
+import { UaskClient } from "uask-sys/pkce";
 import { builder, Sample } from "uask-dom";
 
 const b = builder();
@@ -97,7 +97,7 @@ The following script will read the study we have just created :
 ```js
 // check.js
 
-import { UaskClient } from "uask-sys/client";
+import { UaskClient } from "uask-sys/pkce";
 
 const client = new UaskClient("http://127.0.0.1:3000");
 const survey = await client.surveyDriver.getByName("First-Survey");
@@ -110,7 +110,7 @@ This should print a `Survey` domain model object to the console.
 When a domain model object is saved into the persistent store, it is given some identifiers. For example a `Participant` has a unique code that is computed server side. Changes done server side are returned by the client and should be used to create an updated version of the saved domain model object.
 
 ```ts
-import { UaskClient } from "uask-sys/client";
+import { UaskClient } from "uask-sys/pkce";
 import { ParticipantBuilder } from "uask-dom";
 
 const client = new UaskClient("http://127.0.0.1:3000");
@@ -128,7 +128,7 @@ This prints a `Participant` domain model object to the console with a `participa
 
 Saving a participant and its interviews :
 ```ts
-import { UaskClient } from "uask-sys/client";
+import { UaskClient } from "uask-sys/pkce";
 import { ParticipantBuilder } from "uask-dom";
 
 const client = new UaskClient("http://127.0.0.1:3000");

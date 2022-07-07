@@ -1,8 +1,6 @@
-import { _ as __awaiter, O as isInterviewItemTarget, Q as isInterviewTarget, A as AuditRecord, R as isParticipantTarget, a as surveySerialize, z as participantSerialize, p as participantDeserialize, s as surveyDeserialize, D as Document, M as UaskError, P as ParticipantGetOptions, e as errorMessage, c as SummaryGenericDriver, K as KpiGenericDriver } from './system.js';
+import { _ as __awaiter, O as isInterviewItemTarget, Q as isInterviewTarget, A as AuditRecord, R as isParticipantTarget, c as surveySerialize, q as participantSerialize, t as participantDeserialize, s as surveyDeserialize, D as Document, U as UaskError, P as ParticipantGetOptions, H as errorMessage, S as SummaryGenericDriver, K as KpiGenericDriver } from './client.js';
 import { User, DomainCollection, Sample, ParticipantBuilder, SurveyBuilder, Participant, Interview } from 'uask-dom';
 import 'fast-deep-equal';
-import 'got';
-import 'uask-auth';
 import { exampleParticipants, exampleSamples, exampleSurvey } from 'uask-dom/example';
 import { exampleAccounts } from 'uask-auth/example';
 import { Mutex } from 'await-semaphore';
