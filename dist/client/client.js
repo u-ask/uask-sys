@@ -1826,7 +1826,7 @@ class WorkflowGenerator {
         if (followUp.length > 0)
             this.pageSetGenerator.call("followUp").args(...followUp);
         if (this._end.length > 0)
-            this.pageSetGenerator.call("end").args(...this._end);
+            this.pageSetGenerator.call("terminal").args(...this._end);
         const auxiliary = this._n.filter(n => !this._seq.includes(n));
         if (auxiliary.length > 0)
             this.pageSetGenerator.call("auxiliary").args(...auxiliary);
@@ -1849,6 +1849,9 @@ class WorkflowGenerator {
     auxiliary(...names) {
         this._n.push(...names);
         return this;
+    }
+    terminal(...names) {
+        return this.end(...names);
     }
     end(...names) {
         this._end.push(...names);

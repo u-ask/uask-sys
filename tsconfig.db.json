@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "moduleResolution": "node",
+    "module": "es2020",
+    "declaration": false,
+    "outDir": "./dbmigrations",
+  },
+  "include": ["./db/migrations/*"],
+}
