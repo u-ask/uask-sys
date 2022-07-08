@@ -127,7 +127,7 @@
     "stealer": "^1.0.6",
     "twilio": "^3.77.1",
     "uask-auth": "^1.1.8",
-    "uask-dom": "^1.1.1",
+    "uask-dom": "^1.1.2",
     "uuid-random": "^1.3.2"
   },
   "peerDependencies": {

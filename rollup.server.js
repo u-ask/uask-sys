@@ -25,6 +25,7 @@ export default [
     input: {
       index: "./src/server.ts",
       syncmon: "./src/server/replay/syncmon.ts",
+      db: "./db/migrations",
     },
     output: {
       dir: "./dist/server",

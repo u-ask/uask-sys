@@ -19,7 +19,7 @@ b.workflow()
   .initial("PREINC", "INC")
   .followUp("FUP")
   .auxiliary("PAIN", "SAE")
-  .end("WITHD");
+  .terminal("WITHD");
 
 b.workflow("writer:pv").notify("inclusion", "ae");
 

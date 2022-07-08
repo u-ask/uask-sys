@@ -105,7 +105,7 @@ b.workflow()
   .home("PS1")
   .initial("PS2")
   .followUp("PS3")
-  .end("PS4")
+  .terminal("PS4")
   .auxiliary("PS5", "PS6")
 
 b.workflow("participant")
@@ -139,7 +139,7 @@ test("Generate a survey DSL from domain object #252", t => {
     .home("PS1")
     .initial("PS2")
     .followUp("PS3")
-    .end("PS4")
+    .terminal("PS4")
     .auxiliary("PS5", "PS6");
 
   b.workflow("participant").withPageSets("PS3");
@@ -373,7 +373,7 @@ function testGenerationFromDomain(
   setupRuleTest(b, f);
   const generator = builderToGenerator(b);
   const dsl = dslHelpers(generator.build());
-  t.true(dsl.endsWith(expectedDSL));
+  t.true(dsl.includes(expectedDSL));
 }
 
 function builderToGenerator(b: SurveyBuilder) {

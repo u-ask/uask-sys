@@ -12,7 +12,7 @@ test("Generate a main workflow", t => {
     .home("PS0")
     .initial("PS1", "PS2")
     .followUp("PS3")
-    .end("PS4", "PS5")
+    .terminal("PS4", "PS5")
     .auxiliary("PS6");
   const workflow = workflowBuilder.build([
     new PageSet("PS0"),
@@ -35,7 +35,7 @@ test("Generate a main workflow", t => {
     `.home("PS0")
   .initial("PS1", "PS2")
   .followUp("PS3")
-  .end("PS4", "PS5")
+  .terminal("PS4", "PS5")
   .auxiliary("PS6")`
   );
   t.end();
@@ -43,7 +43,8 @@ test("Generate a main workflow", t => {
 
 test("Generate a participant workflow", t => {
   const workflowBuilder = new WorkflowBuilder("participant", {});
-  workflowBuilder.followUp("PS3").notify("inclusion", "ae");
+  workflowBuilder.followUp("PS3");
+  workflowBuilder.notify("inclusion", "ae");
   const workflow = workflowBuilder.build([new PageSet("PS3")]);
   const json = workflowSerialize(workflow, {});
   const generator = new DerivedWorkflowGenerator();
