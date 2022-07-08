@@ -1,3 +1,4 @@
+![U-ASK](./logo.svg)
 # U-ASK Management System
 This repository contains the server and the client of the [U-ASK](https://github.com/u-ask/uask#readme) system. Before going further with this setup guide be sure to have been through [U-ASK](https://github.com/u-ask/uask#readme) introduction and demo.
 

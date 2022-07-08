@@ -1,6 +1,6 @@
 {
   "name": "uask-sys",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "Data management system for Spiral",
   "main": "./dist/client/index.js",
   "exports": {
@@ -21,7 +21,8 @@
   },
   "type": "module",
   "files": [
-    "dist"
+    "dist",
+    "logo.svg"
   ],
   "scripts": {
     "test": "node --loader ts-node/esm ./test-runner.ts",
