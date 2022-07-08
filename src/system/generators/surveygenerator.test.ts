@@ -109,7 +109,7 @@ b.workflow()
   .auxiliary("PS5", "PS6")
 
 b.workflow("participant")
-  .withPageSets("PS3")`;
+  .withPageSets("PS1", "PS3")`;
 
 test("Generate a survey DSL from domain object #252", t => {
   const b = new SurveyBuilder();

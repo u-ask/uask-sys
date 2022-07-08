@@ -55,7 +55,7 @@ test("Generate a participant workflow", t => {
   const dsl = generator.build();
   t.equal(
     dsl,
-    `.withPageSets("PS3")
+    `.withPageSets("HOME", "PS3")
 .notify("inclusion", "ae")`
   );
   t.end();
