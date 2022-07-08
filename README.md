@@ -79,9 +79,8 @@ const b = builder();
 b.survey("First-Survey")
   .pageSet("Questionnaire").pages("Questions");
 b.page("Questions")
-  .question("Ok?", "OK", b.types.yesno)
-  .question("When:", "WHEN", b.types.date());
-b.workflow().initial("Questionnaire");
+  .question("Ok?", "__INCLUDED", b.types.yesno)
+  .question("When:", "INCLUSION_DATE", b.types.date());
 
 const survey = b.get();
 
@@ -138,8 +137,8 @@ const sample = await client.sampleDriver.getBySampleCode(survey, "Sample-001");
 
 const builder0 = new ParticipantBuilder(survey, "", sample);
 builder0.interview("Questionnaire")
-  .item("OK").value(true)
-  .item("WHEN").value(new Date());
+  .item("__INCLUDED").value(true)
+  .item("INCLUSION_DATE").value(new Date());
 const participant = builder0.build();
 const interview = participant.interviews[0];
 
@@ -173,8 +172,8 @@ const interview = participant.interviews[0];
 
 const builder = new ParticipantBuilder(survey, participant);
 builder.interview("Questionnaire", interview.nonce)
-  .item("OK").value(false)
-  .item("WHEN").value(new Date());
+  .item("__INCLUDED").value(false)
+  .item("INCLUSION_DATE").value(new Date());
 const updatedParticipant = builder.build();
 
 await client.participantDriver.save(survey, updatedParticipant);
