@@ -1,11 +1,11 @@
 import { Knex } from "knex";
 
-export async function up(knex: Knex): Promise<void> {
-  await knex.schema.alterTable("surveys", t => {
+export function up(knex: Knex): Promise<void> {
+  return knex.schema.alterTable("surveys", t => {
     t.string("options", 1024).alter();
   });
 }
 
-export async function down(): Promise<void> {
-  //
+export function down(): Promise<void> {
+  return Promise.resolve();
 }

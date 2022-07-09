@@ -4,6 +4,7 @@ import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import cleanup from "rollup-plugin-cleanup";
 import pkg from "./package.json";
+import { readdirSync } from "fs";
 
 const external = Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies });
 
@@ -42,6 +43,21 @@ export default [
       },
     },
     preserveEntrySignatures: "strict",
+    external: external,
+    plugins,
+  },
+  {
+    input: [
+      ...readdirSync("./db/migrations").map(file => `./db/migrations/${file}`),
+    ],
+    output: {
+      dir: "./dist/migrations",
+      format: "es",
+      chunkFileNames: info => {
+        if (info.name.startsWith("tslib")) return "[name].js";
+        return "[name]-[hash].js";
+      },
+    },
     external: external,
     plugins,
   },

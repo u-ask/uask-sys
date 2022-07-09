@@ -1,6 +1,6 @@
 import { Knex } from "knex";
 
-export async function up(knex: Knex): Promise<void> {
+export function up(knex: Knex): Promise<void> {
   return knex.schema.createTable("interviewItems", table => {
     table.increments();
     table.integer("surveyId").notNullable();
@@ -19,6 +19,6 @@ export async function up(knex: Knex): Promise<void> {
   });
 }
 
-export async function down(knex: Knex): Promise<void> {
+export function down(knex: Knex): Promise<void> {
   return knex.schema.dropTable("interviewItems");
 }

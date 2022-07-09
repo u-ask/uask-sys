@@ -1,9 +1,9 @@
 import { Knex } from "knex";
 
-export async function up(knex: Knex): Promise<void> {
-  await knex("itemTypes").insert({ name: "time" });
+export function up(knex: Knex): Promise<void> {
+  return knex("itemTypes").insert({ name: "time" });
 }
 
-export async function down(knex: Knex): Promise<void> {
-  await knex("itemTypes").where({ name: "time" }).delete();
+export function down(knex: Knex): Promise<void> {
+  return knex("itemTypes").where({ name: "time" }).delete();
 }

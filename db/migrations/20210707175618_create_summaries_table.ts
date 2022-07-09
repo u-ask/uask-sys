@@ -1,10 +1,13 @@
 import { Knex } from "knex";
 
-export async function up(knex: Knex): Promise<void> {
-  await knex.schema.createTable("summaries", t => {
+export function up(knex: Knex): Promise<void> {
+  return knex.schema.createTable("summaries", t => {
     t.integer("surveyId").references("id").inTable("surveys");
     t.integer("sampleId").references("id").inTable("samples");
-    t.integer("participantId").primary().references("id").inTable("participants");
+    t.integer("participantId")
+      .primary()
+      .references("id")
+      .inTable("participants");
     t.string("participantCode").notNullable();
     t.string("sampleCode").notNullable();
     t.integer("interviewCount").notNullable();
@@ -18,6 +21,6 @@ export async function up(knex: Knex): Promise<void> {
   });
 }
 
-export async function down(knex: Knex): Promise<void> {
-  await knex.schema.dropTable("summaries");
+export function down(knex: Knex): Promise<void> {
+  return knex.schema.dropTable("summaries");
 }

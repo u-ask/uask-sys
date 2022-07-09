@@ -1,13 +1,13 @@
 import { Knex } from "knex";
 
-export async function up(knex: Knex): Promise<void> {
-  await knex.schema.alterTable("workflowPageSets", t => {
+export function up(knex: Knex): Promise<void> {
+  return knex.schema.alterTable("workflowPageSets", t => {
     t.boolean("signed");
   });
 }
 
-export async function down(knex: Knex): Promise<void> {
-  await knex.schema.alterTable("workflowPageSets", t => {
+export function down(knex: Knex): Promise<void> {
+  return knex.schema.alterTable("workflowPageSets", t => {
     t.dropColumn("signed");
   });
 }
