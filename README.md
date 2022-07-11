@@ -33,7 +33,7 @@ The APP_ENV variable must be set to `production`. The other possible values are 
 
 [Sendgrid](https://sendgrid.com/) and / or [Twilio](https://www.twilio.com/) account and keys are necessary for sending authentication codes.
 
-_*Important:*_ do not use the `.env` file in production environment ; set the environment variable at host level. The present guide assumes that this is the case.
+_*Important:*_ do not rely on the `.env` file in production environment ; set the environment variable at host level. The present guide assumes that this is the case.
 
 ## Database initialization
 ```
@@ -46,9 +46,9 @@ First start, SAAS mode is required to create the first user.
 SAAS_MODE=true npm run start
 ```
 
-In order to create a first user, run the `init.js` script.
+In order to create a first user, run the `cli.js` script.
 ```
-node ./init.je
+./cli.js "https://localhost:<port>" signup
 ```
 A browser will open on the connexion page. Choose "Sign up" to create a user.
 
@@ -273,7 +273,7 @@ npm install uask-dom uask-sys
 
 Initialize a new survey with name `Second-Survey` on server `https://uask-api.example.com`:
 ```
-./node_modules/.bin/uask-cli init "Second-Survey" "https://uask-api.example.com" > second-survey.js
+./node_modules/.bin/uask-cli "https://uask-api.example.com" init "Second-Survey" > second-survey.js
 ```
 
 This will create a starter script that creates a minimal survey.
@@ -285,7 +285,7 @@ node ./second-survey.js
 
 The code may also be generated from an existing survey, by replacing the operation name from `init` to `generate` or `gen`:
 ```
-./node_modules/.bin/uask-cli gen "Second-Survey" "https://uask-api.example.com" > second-survey.js
+./node_modules/.bin/uask-cli "https://uask-api.example.com" gen "Second-Survey" > second-survey.js
 ```
 
 Survey code should be maintained in a software version control system like Github.

@@ -32,7 +32,7 @@
     "build-server": "./node_modules/.bin/rollup -c rollup.server.js",
     "build": "./node_modules/.bin/tsc ; npm run build-client ; npm run build-server",
     "lint": "./node_modules/.bin/eslint . --ext .ts",
-    "start": "./node_modules/.bin/node -r dotenv/config dist/server",
+    "start": "./node_modules/.bin/node dist/server",
     "migrate": "npm run knex migrate:latest",
     "seed": "npm run knex seed:run",
     "knex": "NODE_ENV=$APP_ENV node --loader ts-node/esm -r dotenv/config ./node_modules/knex/bin/cli",
