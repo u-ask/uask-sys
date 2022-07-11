@@ -6,6 +6,8 @@ The server offers a GraphQL and a REST API. The client allows application to int
 
 Authentication is implemented in a separate repository : [U-ASK Authentication](https://github.com/u-ask/uask-auth#readme).
 
+_*Note:*_ npm scripts needs bash ; please [configure git bash](https://stackoverflow.com/questions/23243353/how-to-set-shell-for-npm-run-scripts-in-windows) as script shell for npm on Windows.
+
 # Install the server
 ```
 git clone https://github.com/u-ask/uask-sys.git
