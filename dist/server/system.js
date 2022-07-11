@@ -2,8 +2,8 @@ import { DomainCollectionImpl, Survey, Page, PageSet, PageItem, Participant, Int
 import deepEqual from 'fast-deep-equal';
 import path$1 from 'path';
 import 'child_process';
-import require$$0 from 'fs';
-import require$$0$1 from 'os';
+import fs$2 from 'fs';
+import require$$0 from 'os';
 import restana from 'restana';
 import fnv from '@sindresorhus/fnv1a';
 import debug from 'debug';
@@ -24,7 +24,7 @@ const development = {
         directory: ["./node_modules/uask-auth/db/migrations", "./db/migrations"],
     },
     seeds: {
-        directory: ["./node_modules/uask-auth/db/seeds/dev", "./db/seeds/dev"],
+        directory: ["./node_modules/uask-auth/db/seeds", "./db/seeds"],
     },
 };
 const demo = {
@@ -37,7 +37,7 @@ const demo = {
         directory: ["./node_modules/uask-auth/db/migrations", "./db/migrations"],
     },
     seeds: {
-        directory: ["./node_modules/uask-auth/db/seeds/dev", "./db/seeds/dev"],
+        directory: ["./node_modules/uask-auth/db/seeds", "./db/seeds"],
     },
 };
 const production = {
@@ -1115,7 +1115,7 @@ function hasValue(interviewItem) {
 
 var isWsl$2 = {exports: {}};
 
-const fs$1 = require$$0;
+const fs$1 = fs$2;
 let isDocker$1;
 function hasDockerEnv() {
 	try {
@@ -1139,8 +1139,8 @@ var isDocker_1 = () => {
 	return isDocker$1;
 };
 
-const os = require$$0$1;
-const fs = require$$0;
+const os = require$$0;
+const fs = fs$2;
 const isDocker = isDocker_1;
 const isWsl$1 = () => {
 	if (process.platform !== 'linux') {
@@ -4800,4 +4800,4 @@ class Store extends Drivers {
     }
 }
 
-export { AccountManager as A, Builder as B, InterviewManagedDriver as C, Document as D, InterviewMixinDriver as E, InterviewRuleDriver as F, SummaryDbDriver as G, AuditDbDriver as H, InterviewSaveOptions as I, __asyncGenerator as J, KpiGenericDriver as K, __await as L, __asyncDelegator as M, __asyncValues as N, ParticipantSummary as P, Store as S, UserTruenorthDriver as U, __awaiter as _, surveyDeserialize as a, provider as b, config as c, service as d, __rest as e, adminRouter as f, errorMessage as g, isManaged as h, interviewItemDeserialize as i, assertNoSubset as j, SampleStoreDriver as k, SampleCacheDriver as l, UserManagedDriver as m, SurveyStoreDriver as n, SurveyReconciliationDriver as o, participantSerialize as p, SurveyCacheDriver as q, ParticipantStoreDriver as r, surveySerialize as s, ParticipantReconciliationDriver as t, ParticipantMixinDriver as u, ParticipantCacheDriver as v, ParticipantAuditDriver as w, ParticipantSummaryDriver as x, InterviewStoreDriver as y, InterviewAuditDriver as z };
+export { AccountManager as A, Builder as B, ParticipantMixinDriver as C, Document as D, ParticipantCacheDriver as E, InterviewMixinDriver as F, InterviewRuleDriver as G, SummaryDbDriver as H, InterviewManagedDriver as I, AuditDbDriver as J, KpiGenericDriver as K, __asyncGenerator as L, __await as M, __asyncDelegator as N, __asyncValues as O, ParticipantStoreDriver as P, Store as S, UserTruenorthDriver as U, __awaiter as _, SurveyReconciliationDriver as a, SurveyStoreDriver as b, SampleStoreDriver as c, ParticipantSummaryDriver as d, ParticipantAuditDriver as e, InterviewAuditDriver as f, InterviewStoreDriver as g, surveyDeserialize as h, participantDeserialize as i, InterviewSaveOptions as j, interviewItemDeserialize as k, ParticipantSummary as l, config as m, provider as n, service as o, participantSerialize as p, __rest as q, adminRouter as r, surveySerialize as s, errorMessage as t, isManaged as u, assertNoSubset as v, SampleCacheDriver as w, UserManagedDriver as x, SurveyCacheDriver as y, ParticipantReconciliationDriver as z };

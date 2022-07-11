@@ -1,5 +1,5 @@
 import { Knex } from "knex";
-import { load } from "../../../src/system/inout/index.js";
+import { load } from "../../src/system/inout/index.js";
 import fs from "fs";
 import path from "path";
 

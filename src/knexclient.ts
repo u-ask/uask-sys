@@ -5,10 +5,10 @@ export const development = {
       '{"user":"postgres","host":"localhost","database":"dev"}'
   ),
   migrations: {
-    directory: ["./node_modules/uask-auth/db/migrations", "./db/migrations"],
+    directory: ["./node_modules/uask-auth/dist/migrations", "./db/migrations"],
   },
   seeds: {
-    directory: ["./node_modules/uask-auth/db/seeds/dev", "./db/seeds/dev"],
+    directory: ["./node_modules/uask-auth/dist/seeds", "./db/seeds"],
   },
 };
 
@@ -19,10 +19,10 @@ export const demo = {
   },
   useNullAsDefault: true,
   migrations: {
-    directory: ["./node_modules/uask-auth/db/migrations", "./db/migrations"],
+    directory: ["./node_modules/uask-auth/dist/migrations", "./db/migrations"],
   },
   seeds: {
-    directory: ["./node_modules/uask-auth/db/seeds/dev", "./db/seeds/dev"],
+    directory: ["./node_modules/uask-auth/dist/seeds", "./db/seeds"],
   },
 };
 

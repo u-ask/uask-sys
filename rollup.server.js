@@ -5,6 +5,7 @@ import json from "@rollup/plugin-json";
 import cleanup from "rollup-plugin-cleanup";
 import pkg from "./package.json";
 import { readdirSync } from "fs";
+import { basename, extname } from "path";
 
 const external = Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies });
 
@@ -24,21 +25,28 @@ const plugins = [
 export default [
   {
     input: {
-      index: "./src/server.ts",
-      syncmon: "./src/server/replay/syncmon.ts",
+      "server/index": "./src/server.ts",
+      "server/syncmon": "./src/server/replay/syncmon.ts",
+      "server/inout": "./src/system/inout/index.ts",
+      ...readdirSync("./db/seeds").reduce((bundle, file) => {
+        const entry = `seeds/${basename(file, extname(file))}`;
+        bundle[entry] = `./db/seeds/${file}`;
+        return bundle;
+      }, {}),
     },
     output: {
-      dir: "./dist/server",
+      dir: "./dist",
       format: "es",
       manualChunks: {
-        system: [
+        "server/system": [
           "./src/drivers/index.ts",
           "./src/system/server.ts",
           "./src/knexclient.ts",
         ],
+        "server/inout": ["./src/system/inout/index.ts"],
       },
       chunkFileNames: info => {
-        if (info.name == "system") return "system.js";
+        if (info.name == "server/system") return "server/system.js";
         return "[name]-[hash].js";
       },
     },
