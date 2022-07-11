@@ -18,7 +18,7 @@ git clone https://github.com/u-ask/uask-sys.git
 | APP_ENV           | the execution environment                    | `production`
 | PORT              | the port to listen to                        | `3000`
 | CALLBACK_ROOT_URL | the authorized open id callback URL          | `https://uask.example.com/callback`
-| AUTH_URL          | the public URL of the authentication service | `https://uask-api.example.com:3000/oidc`
+| AUTH_URL          | the public URL of the authentication service | `https://uask-api.example.com/oidc`
 | AUTH_JWKS         | a JSON stringified JWKS                      | `{"keys":[{"crv":"P-256",...`
 | SAAS_MODE         | set to false to remove sign up               | `true`
 | DB_CONNSTR        | a knex connection string to a PostgreSQL db  | `{"user":"postgres",`<br>`host":"localhost",`<br>`database":"postgres",`<br>`password":"******"}`
@@ -164,7 +164,7 @@ All modification are tracked into the audit trail. The following snippet modify 
 import { UaskClient } from "uask-sys/pkce";
 import { ParticipantBuilder } from "uask-dom";
 
-const client = new UaskClient("http://127.0.0.1:3005");
+const client = new UaskClient("http://127.0.0.1:3000");
 
 const survey = await client.surveyDriver.getByName("First-Survey");
 const samples = await client.sampleDriver.getAll(survey, "Sample-001");
@@ -184,6 +184,20 @@ console.log(records);
 await client.destroy();
 ```
 The second argument of `auditDriver.get(survey, {participantCode: "000002"})` may take additional information to narrow the audit target. See [`auditDriver` reference](#uaskclientauditdriver)
+
+## `generateDSL`
+The `generateDSL` function takes a `Survey` ans returns a string that contains the code used to build the survey using DSL builders as defined in [U-ASK Domain Model](https://github.com/u-ask/uask-dom#readme).
+
+```ts
+import { UaskClient, generateDSL } from "uask-sys/pkce";
+
+const client = new UaskClient("http://127.0.0.1:3000");
+
+const survey = await client.surveyDriver.getByName("First-Survey");
+const dsl = generateDSL(survey);
+console.log(dsl);
+```
+The snippet above regenerates the code used to build the example used in this guide, see [Client usage above](#client-usage).
 
 ## Client reference
 For more information on the domain object model, see [U-ASK Domain Model](https://github.com/u-ask/uask-dom#readme).
@@ -248,3 +262,30 @@ For more information on the domain object model, see [U-ASK Domain Model](https:
 | `nonce?`        | interview nonce
 | `variableName?` | item variable name
 | `intance?`      | instance
+
+# Survey development life cycle
+
+With U-ASK the recommended way to build surveys is to use DSL directly. It is recommended to create a new project with `npm init`, the add U-ASK dependencies:
+
+```
+npm install uask-dom uask-sys
+```
+
+Initialize a new survey with name `Second-Survey` on server `https://uask-api.example.com`:
+```
+./node_modules/.bin/uask-cli init "Second-Survey" "https://uask-api.example.com" > second-survey.js
+```
+
+This will create a starter script that creates a minimal survey.
+
+In order to create the survey on the server, run the script :
+```
+node ./second-survey.js
+```
+
+The code may also be generated from an existing survey, by replacing the operation name from `init` to `generate` or `gen`:
+```
+./node_modules/.bin/uask-cli gen "Second-Survey" "https://uask-api.example.com" > second-survey.js
+```
+
+Survey code should be maintained in a software version control system like Github.

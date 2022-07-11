@@ -13,5 +13,8 @@
     "no-unused-expressions": "error",
     "radar/no-duplicate-string": "off"
   },
+  "env": {
+    "node": true
+  },
   "ignorePatterns": ["node_modules", "dist", "libs"]
 }

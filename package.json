@@ -1,6 +1,6 @@
 {
   "name": "uask-sys",
-  "version": "1.1.9",
+  "version": "1.1.11",
   "description": "Data management system for Spiral",
   "main": "./dist/client/index.js",
   "exports": {
@@ -37,6 +37,9 @@
     "seed": "npm run knex seed:run",
     "knex": "NODE_ENV=$APP_ENV node --loader ts-node/esm -r dotenv/config ./node_modules/knex/bin/cli",
     "serve": "nodemon --loader ts-node/esm -r dotenv/config src/server.ts"
+  },
+  "bin": {
+    "uask-cli": "./cli.js"
   },
   "repository": {
     "type": "git",
