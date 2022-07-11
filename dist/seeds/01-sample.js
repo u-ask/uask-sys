@@ -6,8 +6,6 @@ import { load } from '../server/inout.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import 'child_process';
-import 'os';
 import 'restana';
 import 'debug';
 import 'stealer';
@@ -15,7 +13,6 @@ import 'body-parser';
 import 'ejs';
 import 'crypto';
 import 'oidc-provider';
-import 'openid-client';
 import 'assert';
 import 'uuid-random';
 

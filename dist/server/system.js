@@ -1,9 +1,5 @@
 import { DomainCollectionImpl, Survey, Page, PageSet, PageItem, Participant, Interview, InterviewItem, Sample, Workflow, SurveyBuilder, PageBuilder, PageSetBuilder, WorkflowBuilder, PageItemBuilder, ParticipantBuilder, InterviewBuilder, InterviewItemBuilder, getTranslation, hasPivot, getItem, getVariableName, Library, execute, messageNames, DomainCollection, User, hasFixedLabels, isMLstring, isML, getItemWording, getItemType, InclusionsBySamples, KPISet, SurveyOptions, formatCode, GlobalScope, getItemContext, ItemTypes } from 'uask-dom';
 import deepEqual from 'fast-deep-equal';
-import path$1 from 'path';
-import 'child_process';
-import fs$2 from 'fs';
-import require$$0 from 'os';
 import restana from 'restana';
 import fnv from '@sindresorhus/fnv1a';
 import debug from 'debug';
@@ -12,7 +8,6 @@ import bodyParser from 'body-parser';
 import ejs from 'ejs';
 import crypto from 'crypto';
 import Provider from 'oidc-provider';
-import 'openid-client';
 import assert from 'assert';
 import uuid from 'uuid-random';
 
@@ -21,10 +16,10 @@ const development = {
     client: "postgresql",
     connection: JSON.parse((_a = process.env.DB_CONNSTR) !== null && _a !== void 0 ? _a : '{"user":"postgres","host":"localhost","database":"dev"}'),
     migrations: {
-        directory: ["./node_modules/uask-auth/db/migrations", "./db/migrations"],
+        directory: ["./node_modules/uask-auth/dist/migrations", "./db/migrations"],
     },
     seeds: {
-        directory: ["./node_modules/uask-auth/db/seeds", "./db/seeds"],
+        directory: ["./node_modules/uask-auth/dist/seeds", "./db/seeds"],
     },
 };
 const demo = {
@@ -34,10 +29,10 @@ const demo = {
     },
     useNullAsDefault: true,
     migrations: {
-        directory: ["./node_modules/uask-auth/db/migrations", "./db/migrations"],
+        directory: ["./node_modules/uask-auth/dist/migrations", "./db/migrations"],
     },
     seeds: {
-        directory: ["./node_modules/uask-auth/db/seeds", "./db/seeds"],
+        directory: ["./node_modules/uask-auth/dist/seeds", "./db/seeds"],
     },
 };
 const production = {
@@ -1113,125 +1108,6 @@ function hasValue(interviewItem) {
         typeof interviewItem.unit != "undefined");
 }
 
-var isWsl$2 = {exports: {}};
-
-const fs$1 = fs$2;
-let isDocker$1;
-function hasDockerEnv() {
-	try {
-		fs$1.statSync('/.dockerenv');
-		return true;
-	} catch (_) {
-		return false;
-	}
-}
-function hasDockerCGroup() {
-	try {
-		return fs$1.readFileSync('/proc/self/cgroup', 'utf8').includes('docker');
-	} catch (_) {
-		return false;
-	}
-}
-var isDocker_1 = () => {
-	if (isDocker$1 === undefined) {
-		isDocker$1 = hasDockerEnv() || hasDockerCGroup();
-	}
-	return isDocker$1;
-};
-
-const os = require$$0;
-const fs = fs$2;
-const isDocker = isDocker_1;
-const isWsl$1 = () => {
-	if (process.platform !== 'linux') {
-		return false;
-	}
-	if (os.release().toLowerCase().includes('microsoft')) {
-		if (isDocker()) {
-			return false;
-		}
-		return true;
-	}
-	try {
-		return fs.readFileSync('/proc/version', 'utf8').toLowerCase().includes('microsoft') ?
-			!isDocker() : false;
-	} catch (_) {
-		return false;
-	}
-};
-if (process.env.__IS_WSL_TEST__) {
-	isWsl$2.exports = isWsl$1;
-} else {
-	isWsl$2.exports = isWsl$1();
-}
-
-var defineLazyProp = (object, propertyName, fn) => {
-	const define = value => Object.defineProperty(object, propertyName, {value, enumerable: true, writable: true});
-	Object.defineProperty(object, propertyName, {
-		configurable: true,
-		enumerable: true,
-		get() {
-			const result = fn();
-			define(result);
-			return result;
-		},
-		set(value) {
-			define(value);
-		}
-	});
-	return object;
-};
-
-const path = path$1;
-const isWsl = isWsl$2.exports;
-const defineLazyProperty = defineLazyProp;
-path.join(__dirname, 'xdg-open');
-const {platform, arch} = process;
-function detectArchBinary(binary) {
-	if (typeof binary === 'string' || Array.isArray(binary)) {
-		return binary;
-	}
-	const {[arch]: archBinary} = binary;
-	if (!archBinary) {
-		throw new Error(`${arch} is not supported`);
-	}
-	return archBinary;
-}
-function detectPlatformBinary({[platform]: platformBinary}, {wsl}) {
-	if (wsl && isWsl) {
-		return detectArchBinary(wsl);
-	}
-	if (!platformBinary) {
-		throw new Error(`${platform} is not supported`);
-	}
-	return detectArchBinary(platformBinary);
-}
-const apps = {};
-defineLazyProperty(apps, 'chrome', () => detectPlatformBinary({
-	darwin: 'google chrome',
-	win32: 'chrome',
-	linux: ['google-chrome', 'google-chrome-stable', 'chromium']
-}, {
-	wsl: {
-		ia32: '/mnt/c/Program Files (x86)/Google/Chrome/Application/chrome.exe',
-		x64: ['/mnt/c/Program Files/Google/Chrome/Application/chrome.exe', '/mnt/c/Program Files (x86)/Google/Chrome/Application/chrome.exe']
-	}
-}));
-defineLazyProperty(apps, 'firefox', () => detectPlatformBinary({
-	darwin: 'firefox',
-	win32: 'C:\\Program Files\\Mozilla Firefox\\firefox.exe',
-	linux: 'firefox'
-}, {
-	wsl: '/mnt/c/Program Files/Mozilla Firefox/firefox.exe'
-}));
-defineLazyProperty(apps, 'edge', () => detectPlatformBinary({
-	darwin: 'microsoft edge',
-	win32: 'msedge',
-	linux: ['microsoft-edge', 'microsoft-edge-dev']
-}, {
-	wsl: '/mnt/c/Program Files (x86)/Microsoft/Edge/Application/msedge.exe'
-}));
-
 class Account {
   constructor(userid, surveys, args) {
     Object.assign(this, args);
@@ -1820,11 +1696,11 @@ function setNoCache(req, res, next) {
   res.setHeader("Cache-Control", "no-cache, no-store");
   next();
 }
-const authUrl$1 =
+const authUrl =
   process.env.AUTH_URL ??
   `http://localhost:${process.env.AUTH_PORT ?? 3000}/oidc`;
 function setHost(req, res, next) {
-  const host = new URL(authUrl$1).host;
+  const host = new URL(authUrl).host;
   req.headers.host = host;
   next();
 }
@@ -2001,8 +1877,6 @@ class InteractionManager {
     };
   }
 }
-process.env.AUTH_URL ??
-  `http://localhost:${process.env.AUTH_PORT ?? 3000}/oidc`;
 
 function getAllAccountsForSurvey$1(surveyName, client) {
     const manager = new AccountManager(client);
