@@ -69,11 +69,8 @@ npm i uask-sys
 ```
 
 ## Client usage
-This script saves the survey and a sample.
-The survey is built using [U-SAK Domain Model](https://github.com/u-ask/uask-dom#readme). Note that a survey name **must** contain a `-`.
+A survey is built using [U-SAK Domain Model](https://github.com/u-ask/uask-dom#readme). Note that a survey name **must** contain a `-`.
 ```js
-// start.js
-
 import { UaskClient } from "uask-sys/pkce";
 import { builder, Sample } from "uask-dom";
 
@@ -93,12 +90,10 @@ await client.sampleDriver.save(survey, new Sample("Sample-001"));
 await client.destroy();
 ```
 
-Run the `start.js` script ; a browser will open asking to sign in or sign up.
+Running the program above will open a browser, asking to sign in or sign up.
 
-The following script will read the study we have just created :
+The following will read the study we have just created :
 ```js
-// check.js
-
 import { UaskClient } from "uask-sys/pkce";
 
 const client = new UaskClient("http://127.0.0.1:3000");
@@ -278,9 +273,7 @@ Initialize a new survey with name `Second-Survey` on server `https://uask-api.ex
 ./node_modules/.bin/uask-cli "https://uask-api.example.com" init "Second-Survey" > second-survey.js
 ```
 
-This will create a starter script that creates a minimal survey.
-
-In order to create the survey on the server, run the script :
+This will create a starter script that creates a minimal survey. In order to create the survey on the server, run it :
 ```
 node ./second-survey.js
 ```
