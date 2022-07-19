@@ -84,6 +84,7 @@ function setFacade(
             ],
           },
         },
+        crossOriginResourcePolicy: { policy: "cross-origin" },
       })
     )
     .use(

@@ -1,4 +1,9 @@
-import { DomainCollection, IDomainCollection, mlstring, Survey } from "uask-dom";
+import {
+  DomainCollection,
+  IDomainCollection,
+  mlstring,
+  Survey,
+} from "uask-dom";
 import {
   Document,
   DocumentNode,
@@ -12,7 +17,7 @@ export class DocumentStoreDriver implements IDocumentDriver {
   constructor(private readonly store: Store) {}
 
   save(survey: Survey, document: Document): Promise<Partial<Document>> {
-    const hash = this.h(survey, document) as unknown as number;
+    const hash = this.h(survey, document);
     return this.store
       .saveDocument(survey, document.update({ hash }))
       .then(k => ({ ...k, hash }));
@@ -53,8 +58,10 @@ export class DocumentStoreDriver implements IDocumentDriver {
     return this.store.getDocumentContent(survey.__keys__ as KeyMap, hash);
   }
 
-  private h(survey: Survey, document: Document): bigint {
-    return fnv([survey.__keys__?.id, document.name, document.title].join(","));
+  private h(survey: Survey, document: Document): number {
+    return Number(
+      fnv([survey.__keys__?.id, document.name, document.title].join(","))
+    );
   }
 }
 
